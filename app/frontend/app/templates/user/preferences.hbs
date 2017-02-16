@@ -1,3 +1,5 @@
+{{#grid-listener grid_event='grid_event'}}
+
 <h2>{{t "General Preferences" key='general_preferences'}}</h2>
 <form class="form-horizontal" {{action "savePreferences" on="submit"}}>
 <div class="form-group">
@@ -448,12 +450,68 @@
     {{bound-select select_class="form-control" select_id="vocalization_height" content=vocalizationHeightList selection=model.preferences.device.vocalization_height action=(action (mut model.preferences.device.vocalization_height)) }}
   </div>
 </div>
+
 <div class="form-group">
   <label for="button_spacing" class="col-sm-3 control-label">{{t "Button Spacing" key='button_spacing'}}</label>
   <div class="col-sm-5">
     {{bound-select select_class="form-control" select_id="button_spacing" content=buttonSpacingList selection=model.preferences.device.button_spacing action=(action (mut model.preferences.device.button_spacing)) }}
   </div>
 </div>
+
+
+<!-- grid-Dimension 
+need to add unset default button
+-->
+
+
+<div class="form-group">
+  <label for="set_board_rows" class="col-sm-3 control-label">{{t "Set Grid Rows" key='rows'}}</label>
+  <div class="col-sm-4">
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" {{action "grid_plus_minus" "minus" "model.user_grid_rows"}}>-</button>
+      </span>
+      {{input value=model.user_grid_rows class="form-control" id="set_board_rows" placeholder="not set, enter an number"}}
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" {{action "grid_plus_minus" "plus" "model.user_grid_rows"}}>+</button>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <label for="set_board_cols" class="col-sm-3 control-label">{{t "Set Grid Columns" key='columns'}}</label>
+  <div class="col-sm-4">
+    <div class="input-group">
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" {{action "grid_plus_minus" "minus" "model.user_grid_cols"}}>-</button>
+      </span>
+      {{input value=model.user_grid_cols class="form-control" id="set_board_cols" placeholder="not set, enter an number"}}
+      <span class="input-group-btn">
+        <button type="button" class="btn btn-default" {{action "grid_plus_minus" "plus" "model.user_grid_cols"}}>+</button>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <label for="require_speak_mode_pin" class="col-sm-3 control-label"></label>
+  <div class="form-group">
+    <div class="col-sm-5">
+      <div class="checkbox">
+        <label>
+          {{input type="checkbox" checked=model.user_set_grid_dimension id="user_set_grid_dimension"}}
+          {{t "Set as default for all new boards" key='user_set_grid_dimension'}}
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- button border size -->
 {{#if advanced}}
 <div class="form-group">
   <label for="button_border" class="col-sm-3 control-label">{{t "Button Border Size" key='button_border'}}</label>
@@ -961,3 +1019,4 @@
   </div>
 </div>
 </form>
+{{/grid-listener}}

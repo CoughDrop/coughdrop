@@ -124,10 +124,19 @@
           {{t "Copy Button to Stash" key="copy_button_to_stash"}}
         </button>
       {{else}}
-        <button class={{no_paint_mode_class}} {{action "noPaint"}}><span class='wide'>{{t "&nbsp;&nbsp;Edit&nbsp;&nbsp;" key="edit"}}</span><span class='skinny glyphicon glyphicon-hand-up'></span></button>
+        <!-- A button to open and close the board-editor-slideout, which contains a checklist
+        of words available on buttons in the board.-->
+        <button class="toggle-slideout-button btn btn-default" {{action "toggleBoardEditorSlideout"}}>
+          <span class='wide'>{{t "&nbsp;&nbsp;Access Quick Edit&nbsp;&nbsp;" key="quick_edit"}}</span>
+        </button>
+        <button class={{no_paint_mode_class}} {{action "noPaint"}}>
+          <span class='wide'>{{t "&nbsp;&nbsp;Edit&nbsp;&nbsp;" key="edit"}}</span>
+          <span class='skinny glyphicon glyphicon-hand-up'></span>
+        </button>
         <span class="dropdown" style="display: inline-block;">
           <button class={{paint_mode_class}} data-toggle="dropdown">
-            <span class="wide">{{t "Paint" key="paint"}}</span><span class="skinny glyphicon glyphicon-tint"></span>
+            <span class="wide">{{t "Paint" key="paint"}}</span>
+            <span class="skinny glyphicon glyphicon-tint"></span>
             {{#if board.paint_mode}}
               {{{board.paintColor}}}
             {{/if}}

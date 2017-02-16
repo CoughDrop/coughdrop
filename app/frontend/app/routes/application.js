@@ -48,7 +48,7 @@ export default Ember.Route.extend({
       modal.open('speak-menu');
     },
     newBoard: function() {
-      modal.open('new-board');
+      modal.open('new-board-creation-method');
     },
     pickWhichHome: function() {
       modal.open('which-home');

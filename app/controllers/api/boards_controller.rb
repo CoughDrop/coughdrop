@@ -275,7 +275,11 @@ class Api::BoardsController < ApplicationController
       progress = Progress.schedule(Board, :import, @api_user.global_id, params['url'])
       render json: JsonApi::Progress.as_json(progress, :wrapper => true).to_json
     else
-      type = (params['type'] == 'obz' ? 'obz' : 'obf')
+      type = (
+      if params['type'] == 'obz' then 'obz'
+      elsif params['type'] == 'csv' then 'csv'
+      else 'obf'
+      end)
       remote_path = "imports/boards/#{@api_user.global_id}/upload-#{Security.nonce('filename')}.#{type}"
       content_type = "application/#{type}"
       params = Uploader.remote_upload_params(remote_path, content_type)

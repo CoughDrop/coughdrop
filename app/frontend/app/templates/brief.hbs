@@ -76,6 +76,9 @@
           {{t "Copy Button to Stash" key="copy_button_to_stash"}}
         </button>
       {{else}}
+        <!-- A button to open and close the board-editor-slideout, which contains a checklist
+        of words available on buttons in the board.-->
+        <button class="toggle-slideout-button"><span class='wide'>{{t "&nbsp;&nbsp;Reveal Sidebar&nbsp;&nbsp;" key="reveal_sidebar"}}</span><span class='skinny glyphicon glyphicon-hand-up'></span></button>
         <button class={{no_paint_mode_class}} {{action "noPaint"}}><span class='wide'>{{t "&nbsp;&nbsp;Edit&nbsp;&nbsp;" key="edit"}}</span><span class='skinny glyphicon glyphicon-hand-up'></span></button>
         <span class="dropdown" style="display: inline-block;">
           <button class={{paint_mode_class}} data-toggle="dropdown">
@@ -371,6 +374,8 @@
   </div>
 </header>
 <div id="content" class={{content_class}}>
+  {{board-editor-slideout}} <!-- The slideout containing a checklist of words in board.
+                                 Visible only in edit mode on a board.-->
   {{ outlet }}
 </div>
 {{#if app_state.sidebar_visible}}

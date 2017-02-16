@@ -1,0 +1,35 @@
+<nav>
+  <h4>Quick Edit</h4>
+  <label style="font-weight: normal;">
+    <span role=button aria-label="Rearrange buttons" >
+      <span class="glyphicon glyphicon-ok-circle" aria-hidden="true" onclick={{action "setRearrangePreference" true}}></span>
+    </span>
+    <span role=button aria-label="Do not rearrange buttons" onclick={{action "setRearrangePreference" false}}>
+      <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
+    </span>
+    {{#if doRearrangeButtons}}
+      Rearrange buttons upon edit.
+    {{else}}
+      Do not change button order.
+    {{/if}}
+  </label>
+  {{#each buttons as |row|}}
+    {{#each row as |button|}}
+      {{#unless button.empty}}
+        <div>
+          <label style="font-weight: normal;">
+            <span role=button class="remove-button" aria-label="Remove Word" onclick={{action "removeButton" button}}>
+              <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+            </span>
+            {{button.label}}
+          </label>
+        </div>
+      {{/unless}}
+    {{/each}}
+  {{/each}}
+  <span aria-label="Add Word">
+    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+  </span>
+  {{input id="add-word-input" type="text" aria-label="Enter new word here"
+  placeholder="Enter new word..."}}
+</nav>

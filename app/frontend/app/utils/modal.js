@@ -184,7 +184,7 @@ modal.ModalController = Ember.Controller.extend({
       modal.last_controller = controller;
       controller.set('model', settings);
       if(controller.opening) {
-        controller.opening();
+        controller.opening(settings);
       }
     },
     closing: function() {

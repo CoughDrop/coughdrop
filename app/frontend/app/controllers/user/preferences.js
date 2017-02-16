@@ -8,8 +8,12 @@ import modal from '../../utils/modal';
 import persistence from '../../utils/persistence';
 import Button from '../../utils/button';
 
+import CoughDrop from '../../app';
+import editManager from '../../utils/edit_manager';
+
 export default Ember.Controller.extend({
   application: Ember.inject.controller(),
+
   buttonSpacingList: [
     {name: i18n.t('minimal', "Minimal (1px)"), id: "minimal"},
     {name: i18n.t('extra_small', "Extra-Small (2px)"), id: "extra-small"},
@@ -389,6 +393,33 @@ export default Ember.Controller.extend({
       modal.open('modify-core-words', {user: this.get('model')}).then(function() {
         _this.check_core_words();
       });
+    },
+
+    grid_event: function(action, row, col) {
+      this.send(action, row, col);
+    },
+    grid_plus_minus: function(direction, attribute) {
+      var value = parseInt(this.get(attribute), 10);
+      if(direction == 'minus') {
+        value = value - 1;
+      } else {
+        value = value + 1;
+      }
+      value = Math.min(Math.max(1, value), 20);
+      this.set(attribute, value);
+    },
+    hoverGrid: function(row, col) {
+      this.set('previewRows', row);
+      this.set('previewColumns', col);
+    },
+    hoverOffGrid: function() {
+      this.set('previewRows', this.get('model.grid.rows'));
+      this.set('previewColumns', this.get('dmodel.grid.columns'));
+    },
+    setGrid: function(row, col) {
+      this.set('model.grid.rows', row);
+      this.set('model.grid.columns', col);
     }
   }
+
 });

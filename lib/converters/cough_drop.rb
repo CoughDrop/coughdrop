@@ -360,4 +360,46 @@ module Converters::CoughDrop
     json = to_external(board)
     OBF::External.to_png(json, dest_path)
   end
+
+
+  def self.from_csv(csv_path, opts)
+    opts['id'] ||= csv_path.split('/').last.split('.').first
+    self.from_csv_text(File.read(csv_path), opts)
+  end
+
+  def self.from_csv_text(csv_text, opts)
+    order_flat = []
+    buttons = []
+    csv_text.split(/[\r\n]/).each do |button_csv|
+      button_attrs = button_csv.split(',')
+      button_attrs.each do |attr|
+        attr.strip!
+      end
+      button = {}
+      button['id'] = button_attrs[0]
+      order_flat << button_attrs[0]
+
+      button['label'] = button_attrs[1]
+
+      button['vocalization'] = (if button_attrs[2] and button_attrs[2].length > 0
+                                  button_attrs[2]
+                                else
+                                  button_attrs[1]
+                                end)
+      buttons << button
+    end
+    num_buttons = order_flat.length
+    grid_dim = Math.sqrt(num_buttons).ceil
+    grid = {'rows': grid_dim,
+            'columns': grid_dim,
+            'order': (0 .. grid_dim).map do |i|
+              order_flat[i*grid_dim,grid_dim]
+            end
+    }
+    board = Converters::Utils.obf_shell
+    board['id'] = opts['id']
+    board['buttons'] = buttons
+    board['grid'] = grid
+    return self.from_external(board, opts)
+  end
 end

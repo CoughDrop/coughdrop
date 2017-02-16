@@ -13,6 +13,11 @@ CoughDrop.User = DS.Model.extend({
     }
   },
   user_name: DS.attr('string'),
+
+  user_grid_rows: DS.attr('number'),
+  user_grid_cols: DS.attr('number'),
+  user_set_grid_dimension: DS.attr('boolean'),
+
   link: DS.attr('string'),
   joined: DS.attr('date'),
   sync_stamp: DS.attr('string'),
