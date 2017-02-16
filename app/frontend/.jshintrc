@@ -2,7 +2,8 @@
   "predef": [
     "document",
     "window",
-    "-Promise"
+    "-Promise",
+    "Slideout"
   ],
   "browser": true,
   "boss": true,

@@ -133,6 +133,15 @@ var editManager = Ember.Object.extend({
     if(!this.controller) { return; }
     var lastState = this.get('history').popObject();
     if(lastState) {
+      // Check which buttons are empty, and reapply
+      // empty property if so.
+      lastState.map(function(row) {
+        row.map(function(button) {
+          if (this.button_is_empty(button)) {
+            button.set('empty', true);
+          }
+        }, this);
+      }, this);
       var currentState = this.clone_state();
       this.get('future').pushObject(currentState);
       this.controller.set('ordered_buttons', lastState);
@@ -142,6 +151,15 @@ var editManager = Ember.Object.extend({
     if(!this.controller) { return; }
     var state = this.get('future').popObject();
     if(state) {
+      // Check which buttons are empty, and reapply
+      // empty property if so.
+      state.map(function(row) {
+        row.map(function(button) {
+          if (this.button_is_empty(button)) {
+            button.set('empty', true);
+          }
+        }, this);
+      }, this);
       var currentState = this.clone_state();
       this.get('history').pushObject(currentState);
       this.controller.set('ordered_buttons', state);
@@ -217,6 +235,59 @@ var editManager = Ember.Object.extend({
     }
     return null;
   },
+  // Sets the first empty button found in the list (left to right,
+  // top to bottom) to have the given label.
+  add_button_at_next_empty: function(newLabel) {
+    var ob = this.controller.get('ordered_buttons') || [];
+    var foundHole = false;
+    for(var idx = 0; idx < ob.length; idx++) {
+      for(var jdx = 0; jdx < ob[idx].length; jdx++) {
+        var button = ob[idx][jdx];
+        if(this.button_is_empty(button) && !foundHole) {
+          this.change_button(button.id, {'label': newLabel});
+          foundHole = true;
+          break;
+        }
+      }
+    }
+    // TODO handle case where there are no more empty buttons on the board.
+    // Should auto create a new board with a link arrow button.
+    // Until then, will alert the user that they need to make more room.
+    if (!foundHole) {
+      alert('Sorry, you have ran out of room on this board! Please either add more rows and columns, or link to a new board.');
+    }
+  },
+  // Sorts buttons so that the filled ones are in the front, and empty ones at the
+  // end of a list.
+  remove_empty_holes: function() {
+    // Flatten array.
+    var list = [];
+    var ob = this.controller.get('ordered_buttons') || [];
+    for(var idx = 0; idx < ob.length; idx++) {
+      for(var jdx = 0; jdx < ob[idx].length; jdx++) {
+        var button = ob[idx][jdx];
+        list.push(button);
+      }
+    }
+    // Selection Sort
+    var i = 0;
+    var j = 0;
+    var n = list.length;
+    // filled < empty, comes first.
+    // Move each button one by one
+    for (j = 0; j < n-1; j++) {
+      // If button is empty, try to swap it.
+      if (this.button_is_empty(list[j])) {
+        // Search for next non-empty button. Swap when find it.
+        for (i = j+1; i < n; i++) {
+          if (!this.button_is_empty(list[i])) {
+              this.switch_buttons(list[j].id, list[i].id);
+              break;
+          }
+        }
+      }
+    }
+  },
   clear_button: function(id) {
     var opts = {};
     for(var idx = 0; idx < editManager.Button.attributes.length; idx++) {
@@ -241,9 +312,16 @@ var editManager = Ember.Object.extend({
       console.log("no button found for: " + id);
     }
   },
+  // Returns whether a button is empty or not.
+  // Empty is defined as having no image nor label.
+  button_is_empty: function(button) {
+    return !button.label && !button.image_id;
+  },
+  // Check to see if a button is empty, and if so, set it to be empty.
+  // This sets empty on buttons currently in model.
   check_button: function(id) {
     var button = this.find_button(id);
-    var empty = !button.label && !button.image_id;
+    var empty = this.button_is_empty(button);
     Ember.set(button, 'empty', !!empty);
   },
   stash_button: function(id) {

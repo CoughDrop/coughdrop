@@ -15,6 +15,7 @@ import Button from '../utils/button';
 
 export default Ember.Controller.extend({
   board: Ember.inject.controller('board.index'),
+  slideoutService: Ember.inject.service('slideout-service'),
   updateTitle: function(str) {
     if(!Ember.testing) {
       if(str) {
@@ -56,6 +57,10 @@ export default Ember.Controller.extend({
     return modal.open('copying-board', {board: oldBoard, action: decision.action, user: decision.user, shares: decision.shares, make_public: decision.make_public, translate_locale: decision.translate_locale});
   },
   actions: {
+    // Open/close the board editor slideout when visible.
+    toggleBoardEditorSlideout: function() {
+      this.get('slideoutService').emitToggleSlideout();
+    },
     invalidateSession: function() {
       session.invalidate(true);
     },

@@ -72,13 +72,20 @@
       {{#if board.grid}}
         {{#if ordered_buttons}}
           {{#if app_state.edit_mode}}
-            {{#each ordered_buttons as |row|}}
-              <div class="button_row">
-                {{#each row as |button|}}
-                  {{partial "button"}}
-                {{/each}}
-              </div>
-            {{/each}}
+            <!-- The slideout containing a checklist of words in board.
+            Visible only in edit mode on a board.-->
+            {{board-editor-slideout id="menu" buttons=ordered_buttons}}
+            <!-- A wrapper manel for the body of the website, to be pushed to the right
+            when the slideout opens in edit mode -->
+            <div id="slideout-main-panel" style="overflow: visible; background-color: white;">
+              {{#each ordered_buttons as |row|}}
+                <div class="button_row">
+                  {{#each row as |button|}}
+                    {{partial "button"}}
+                  {{/each}}
+                </div>
+              {{/each}}
+            </div>
           {{else}}
             {{#if app_state.currentUser.preferences.device.canvas_render}}
               {{board-canvas id="board_canvas" redraw='redraw' tabindex='0'}}

@@ -158,7 +158,7 @@ var contentGrabbers = Ember.Object.extend({
       } else if(!video && files[idx].type.match(/^video/)) {
         video = files[idx];
       } else {
-        if(!board && files[idx].name.match(/\.(obf|obz)$/)) {
+        if(!board && files[idx].name.match(/\.(obf|obz|csv)$/)) {
           board = files[idx];
         }
       }
@@ -1916,7 +1916,7 @@ var boardGrabber = Ember.Object.extend({
   files_dropped: function(files) {
     var board = null;
     for(var idx = 0; idx < files.length; idx++) {
-      if(!board && files[idx].name.match(/\.(obf|obz)$/)) {
+      if(!board && files[idx].name.match(/\.(obf|obz|csv)$/)) {
         board = files[idx];
       }
     }
@@ -1944,6 +1944,8 @@ var boardGrabber = Ember.Object.extend({
     var type = 'obf';
     if(board.name && board.name.match(/\.obz$/)) {
       type = 'obz';
+    } else if(board.name && board.name.match(/\.csv$/)) {
+      type = 'csv';
     }
 
     var prep = generate_data_uri.then(function(data) {

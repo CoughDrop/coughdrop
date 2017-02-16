@@ -40,6 +40,7 @@ module.exports = function(defaults) {
   // the dropdown list. This typically results in a click on the "home"
   // link in the top right corner of the app.
 //  app.import('bower_components/hammer-time/hammer-time.js');
+  app.import('bower_components/slideout.js/dist/slideout.js');
   app.import('bower_components/moment/moment.js');
   app.import('bower_components/tinycolor/tinycolor.js');
   app.import('bower_components/jquery-minicolors/jquery.minicolors.min.js');

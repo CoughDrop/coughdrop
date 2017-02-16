@@ -1,0 +1,52 @@
+<!-- Handles the initial dialog that opens when a user wants to create a new board.
+Allows them to specify whether they would like to do so through the automatically
+by topic, manually from scratch, or by importing an OBF or CSV file -->
+{{#modal-dialog action="close" opening='opening' closing='closing'}}
+  <div class="board_drop">
+    <div class="modal-header">
+      <button type="button" class="close" {{action 'close'}}>&times;</button>
+      <h3>
+        {{t "Create a New Board" key='create_a_new_board'}}
+      </h3>
+      <h4> 
+        {{t "How would you like to create your board?" key='how_would_you_like_to_create_your_board' }}
+      </h4>
+    </div>
+    <div class="modal-body">
+      <div class="row" style="padding-bottom: 15px">
+        <div class="col-md-9">
+          <span> Tell us what you want to talk about! We'll do the heavy lifting 
+          and suggest a board for you to start from.</span>
+        </div>
+        <div class="col-md-3">
+           <button {{action "createAutoByTopic"}} class='btn btn-primary'>
+            {{t "Create By Topic" key='create_by_topic'}}
+          </button>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 15px">
+        <div class="col-md-9">
+          <span> Already have words and images in mind? Build a board from a clean slate.</span>
+        </div>
+        <div class="col-md-3">
+          <button {{action "createManually"}} class="btn btn-default">
+            {{t "Create Manually" key='create_manually'}}
+          </button>
+        </div>
+      </div>
+      <div class="row" style="padding-bottom: 15px">
+        <div class="col-md-9">
+          <span> Already built it? Import a board from OBF or CSV here. </span>
+        </div>
+        <div class="col-md-3">
+          <span class="file_select_holder">
+            <button class='btn btn-default'>
+              {{t "Import Board(s)" key='import_boards'}}
+            </button>
+            <input type="file" name="board_upload" id="board_upload"/>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+{{/modal-dialog}}

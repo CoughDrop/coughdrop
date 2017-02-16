@@ -1,27 +1,43 @@
 {{#grid-listener grid_event='grid_event'}}
 {{#modal-dialog action="close" opening='opening' closing='closing'}}
   <div class="board_drop">
+    <!-- Header, depending on if this is an auto or manually created board -->
     <div class="modal-header">
       <button type="button" class="close" {{action 'close'}}>&times;</button>
-      <h3>
-        {{t "Create a New Board" key='create_a_new_board'}}
-        <span class="file_select_holder">
-          <button class='btn btn-default'>
-            {{t "Import Board(s)" key='import_boards'}}
-          </button>
-          <input type="file" name="board_upload" id="board_upload"/>
-        </span>
-      </h3>
+      {{#if model.createAutomatically}}
+        <h3>
+          {{t "What would you like to talk about?" key='what_would_you_like_to_talk_about'}}
+        </h3>
+      {{else}}
+        <h3>
+          {{t "Create a New Board" key='create_a_new_board'}}
+        </h3>
+      {{/if}}
     </div>
+
+    <!-- Body of the modal -->
     <div class="modal-body">
       <form class="form-horizontal" {{action "saveBoard" on="submit"}}>
       <!-- TODO: form should wrap to include submit button, no? -->
-      <div class="form-group">
-        <label for="new_board_name" class="col-sm-2 control-label">{{t "Name" key='name'}}</label>
-        <div class="col-sm-10">
-          {{input value=model.name class="form-control" id="new_board_name" placeholder="My Board"}}
+
+      <!-- Name field, either displayed as search for auto creation or name if not -->
+      {{#if model.createAutomatically}}
+        <div class="form-group">
+          <label for="new_board_name" class="col-sm-2 control-label">{{t "Search" key='name'}}</label>
+          <div class="col-sm-10">
+            {{input value=model.name class="form-control" id="new_board_name" placeholder="beaches, Harry Potter, Despicable Me"}}
+          </div>
         </div>
-      </div>
+      {{else}}
+        <div class="form-group">
+          <label for="new_board_name" class="col-sm-2 control-label">{{t "Name" key='name'}}</label>
+          <div class="col-sm-10">
+            {{input value=model.name class="form-control" id="new_board_name" placeholder="My Board"}}
+          </div>
+        </div>
+      {{/if}}
+
+      <!-- Show supervisees notice regardless which type of board this is -->
       {{#if supervisees}}
         <div class="form-group">
           <label for="for_user_id" class="col-sm-2 control-label">{{t "For" key='for'}}</label>
@@ -30,47 +46,53 @@
           </div>
         </div>
       {{/if}}
-      <div class="form-group">
-        <label for="new_board_rows" class="col-sm-2 control-label">{{t "Rows" key='rows'}}</label>
-        <div class="col-sm-3">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default" {{action "plus_minus" "minus" "model.grid.rows"}}>-</button>
-            </span>
-            {{input value=model.grid.rows class="form-control" id="new_board_rows" placeholder="##"}}
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default" {{action "plus_minus" "plus" "model.grid.rows"}}>+</button>
-            </span>
+
+      <!-- Only show grid size options if building manually. -->
+      {{#unless model.createAutomatically}}
+        <div class="form-group">
+          <label for="new_board_rows" class="col-sm-2 control-label">{{t "Rows" key='rows'}}</label>
+          <div class="col-sm-3">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" {{action "plus_minus" "minus" "model.grid.rows"}}>-</button>
+              </span>
+              {{input value=model.grid.rows class="form-control" id="new_board_rows" placeholder="##"}}
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" {{action "plus_minus" "plus" "model.grid.rows"}}>+</button>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="new_board_columns" class="col-sm-2 control-label">{{t "Columns" key='columns'}}</label>
-        <div class="col-sm-3" style="height: 100px;">
-          <div class="input-group">
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default" {{action "plus_minus" "minus" "model.grid.columns"}}>-</button>
-            </span>
-            {{input value=model.grid.columns class="form-control" id="new_board_columns" placeholder="##"}}
-            <span class="input-group-btn">
-              <button type="button" class="btn btn-default" {{action "plus_minus" "plus" "model.grid.columns"}}>+</button>
-            </span>
+        <div class="form-group">
+          <label for="new_board_columns" class="col-sm-2 control-label">{{t "Columns" key='columns'}}</label>
+          <div class="col-sm-3" style="height: 100px;">
+            <div class="input-group">
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" {{action "plus_minus" "minus" "model.grid.columns"}}>-</button>
+              </span>
+              {{input value=model.grid.columns class="form-control" id="new_board_columns" placeholder="##"}}
+              <span class="input-group-btn">
+                <button type="button" class="btn btn-default" {{action "plus_minus" "plus" "model.grid.columns"}}>+</button>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="col-sm-7" id="grid_selection">
-          <div class="row">
-            {{#each showGrid as |row|}}
-              {{#each row as |cell|}}
-                <div style="width: 8.33%; float: left;" class={{cell.preview_class}} data-row="{{unbound cell.row}}" data-col="{{unbound cell.column}}">
-                  <div title="{{unbound cell.row}} x {{unbound cell.column}}">
-                    &nbsp;
+          <div class="col-sm-7" id="grid_selection">
+            <div class="row">
+              {{#each showGrid as |row|}}
+                {{#each row as |cell|}}
+                  <div style="width: 8.33%; float: left;" class={{cell.preview_class}} data-row="{{unbound cell.row}}" data-col="{{unbound cell.column}}">
+                    <div title="{{unbound cell.row}} x {{unbound cell.column}}">
+                      &nbsp;
+                    </div>
                   </div>
-                </div>
+                {{/each}}
               {{/each}}
-            {{/each}}
+            </div>
           </div>
         </div>
-      </div>
+      {{/unless}}
+
+      <!-- Show checkbox for public or not regardless creation method -->
       <div class="form-group">
         <fieldset>
           <label class="col-sm-2 control-label">{{t "Public" key='public'}}</label>
@@ -84,12 +106,20 @@
           </div>
         </fieldset>
       </div>
-      <div class="form-group">
-        <label for="image_url" class="col-sm-2 control-label">{{t "Icon" key='icon'}}</label>
-        <div class="col-sm-10">
-          {{icon-select selection=model.image_url action=(action (mut model.image_url)) }}
+
+      <!-- Only show icon select in main section if we are editing manually.
+      If we are creating boards automatically, the icon for the search term will
+      become the icon for the board set. -->
+      {{#unless model.createAutomatically}}
+        <div class="form-group">
+          <label for="image_url" class="col-sm-2 control-label">{{t "Icon" key='icon'}}</label>
+          <div class="col-sm-10">
+            {{icon-select selection=model.image_url action=(action (mut model.image_url)) }}
+          </div>
         </div>
-      </div>
+      {{/unless}}
+
+      <!-- Now handle more options -->
       {{#unless more_options}}
         <div class="form-group">
           <div class="col-sm-10 col-sm-offset-2">

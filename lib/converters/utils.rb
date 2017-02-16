@@ -75,6 +75,9 @@ module Converters::Utils
       elsif url.match(/\.obf$/) || response.headers['Content-Type'] == 'application/obf'
         board = Converters::CoughDrop.from_obf(file.path, {'user' => user})
         result = [board]
+      elsif url.match(/\.csv$/) || response.headers['Content-Type'] == 'application/csv'
+        board = Converters::CoughDrop.from_csv(file.path, {'user' => user})
+        result = [board]
       else
         raise "Unrecognized file type: #{response.headers['Content-Type']}"
       end

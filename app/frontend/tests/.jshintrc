@@ -44,7 +44,8 @@
     "andThen",
     "currentURL",
     "currentPath",
-    "currentRouteName"
+    "currentRouteName",
+    "Slideout"
   ],
   "node": false,
   "browser": false,

@@ -6,8 +6,12 @@ import i18n from '../utils/i18n';
 import editManager from '../utils/edit_manager';
 
 export default modal.ModalController.extend({
-  opening: function() {
+  opening: function(settings) {
+    // Create empty board record, and set whether we are creating this board
+    // automatically or manually. (Originally set when opening the modal).
     this.set('model', CoughDrop.store.createRecord('board', {public: false, license: {type: 'private'}, grid: {rows: 2, columns: 4}}));
+    this.set('model.createAutomatically', settings.createAutomatically);
+
     if(window.webkitSpeechRecognition) {
       var speech = new window.webkitSpeechRecognition();
       if(speech) {
