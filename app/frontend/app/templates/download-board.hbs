@@ -4,6 +4,8 @@
     <h3>
       {{#if pdf_download}}
         {{t "Print Board" key='print_board'}}
+      {{else if csv_download}}
+        {{t "Download csv" key='csv_board'}}
       {{else}}
         {{t "Download Board" key='download_board'}}
       {{/if}}

@@ -210,7 +210,7 @@ var contentGrabbers = EmberObject.extend({
       } else if(!video && files[idx].type.match(/^video/)) {
         video = files[idx];
       } else {
-        if(!board && files[idx].name.match(/\.(obf|obz)$/)) {
+        if(!board && files[idx].name.match(/\.(obf|obz|csv)$/)) {
           board = files[idx];
         }
         if(!zip && files[idx].name.match(/\.zip$/)) {
@@ -2129,7 +2129,7 @@ var boardGrabber = EmberObject.extend({
   files_dropped: function(files) {
     var board = null;
     for(var idx = 0; idx < files.length; idx++) {
-      if(!board && files[idx].name.match(/\.(obf|obz)$/)) {
+      if(!board && files[idx].name.match(/\.(obf|obz|csv)$/)) {
         board = files[idx];
       }
     }
@@ -2144,7 +2144,7 @@ var boardGrabber = EmberObject.extend({
 
     if(!board) {
       modal.close();
-      modal.error(i18n.t('invalid_board_file', "Please select a valid board file (.obf or .obz)"));
+      modal.error(i18n.t('invalid_board_file', "Please select a valid board file (.obf, .obz, or .csv)"));
       return;
     }
     var generate_data_uri = contentGrabbers.read_file(board);
@@ -2157,6 +2157,9 @@ var boardGrabber = EmberObject.extend({
     var type = 'obf';
     if(board.name && board.name.match(/\.obz$/)) {
       type = 'obz';
+    }
+    else if(board.name && board.name.match(/\.csv$/)) {
+      type = 'csv';
     }
 
     var progress = contentGrabbers.upload_for_processing(board, '/api/v1/boards/imports', {type: type}, progressor);

@@ -7,6 +7,37 @@ module Converters::CoughDrop
     json = to_external(board, {})
     OBF::External.to_obf(json, dest_path, path_hash)
   end
+
+  def self.to_csv(board, dest_path, path_hash=nil)
+    json = to_external(board, {})
+    csv_string = "title, " + json['name'] + "\n"
+    grid = json['grid']
+    csv_string += "rows, " + grid['rows'].to_s + "\ncolumns, "
+    csv_string += grid['columns'].to_s + "\n"
+    csv_string += "labels"
+    order_flat = []
+    grid['order'].each do |row|
+      row.each do |cell|
+        order_flat << cell
+      end
+    end
+    order_flat.each_with_index do |cell, idx|
+      if cell == nil || cell == 'null'
+        button = {'label' => 'n/a'}
+        image = {'url' => 'n/a'}
+        json['buttons'].insert(idx, button)
+        json['images'].insert(idx, image)
+      end
+    end
+    json['buttons'].each do |btn|
+      csv_string += ", " + btn['label']
+    end
+    csv_string += "\n images"
+    json['images'].each do |img|
+      csv_string += ", " + img['url']
+    end
+    File.open(dest_path, 'w') {|f| f.write(csv_string) }
+  end
   
   def self.to_external(board, opts)
     res = OBF::Utils.obf_shell
@@ -124,14 +155,12 @@ module Converters::CoughDrop
   
   def self.from_external(json, opts)
     obj = OBF::Utils.parse_obf(json)
-
     raise "user required" unless opts['user']
     raise "missing id" unless obj['id']
     if obj['ext_coughdrop_settings'] && obj['ext_coughdrop_settings']['protected'] && obj['ext_coughdrop_settings']['key']
       user_name = obj['ext_coughdrop_settings']['key'].split(/\//)[0]
       raise "can't import protected boards to a different user" unless user_name == opts['user'].user_name
     end
-
     hashes = {}
     hashes['images_hash_ids'] = obj['buttons'].map{|b| b && b['image_id'] }.compact
     hashes['sounds_hash_ids'] = obj['buttons'].map{|b| b && b['sound_id'] }.compact
@@ -356,5 +385,75 @@ module Converters::CoughDrop
   def self.to_png(board, dest_path)
     json = to_external(board, {})
     OBF::External.to_png(json, dest_path)
+  end
+
+  def self.from_csv(csv_path, opts)
+    opts['id'] ||= csv_path.split('/').last.split('.').first
+    self.from_csv_text(File.read(csv_path), opts)
+  end
+
+  def self.from_csv_text(csv_text, opts)
+    order_flat = []
+    labels = []
+    image_urls = []
+    board = Converters::Utils.obf_shell
+    grid = {'rows' => 0,
+            'columns' => 0,
+            'order' => []}
+    csv_text.split("\n").each do |category_csv|
+      category_attrs = category_csv.split(',')
+      category_attrs.each do |attr|
+        attr.strip!
+      end
+      if category_attrs[0].downcase == 'title'
+        board['name'] = category_attrs[1]
+      elsif category_attrs[0].downcase == 'rows'
+        grid['rows'] = category_attrs[1]
+      elsif category_attrs[0].downcase == 'columns'
+        grid['columns'] = category_attrs[1]
+      elsif category_attrs[0].downcase == 'labels'
+        labels = category_attrs[1..-1]
+      elsif category_attrs[0].downcase == 'images'
+        image_urls = category_attrs[1..-1]
+      end
+    end
+    b = 1
+    id = 1
+    images = []
+    buttons = []
+    until b > labels.length do
+       if (labels[b-1].downcase == 'n/a' || labels[b-1].downcase == "")
+          order_flat[b-1] = 'null'
+          b += 1
+          next
+       end
+       order_flat[b-1] = id
+       button = {'id' => id,
+                 'label' => labels[b-1],
+                }
+       if (image_urls.length >= b && image_urls[b-1].length > 0)
+          button['image_id'] = id
+          image = {'id' => id,
+                   'url' => image_urls[b-1]
+                  }
+          images << image
+       end
+       buttons << button
+       id += 1
+       b += 1
+    end
+    row = 0
+    rows = grid['rows'].to_i
+    columns = grid['columns'].to_i
+    until (row >= rows) do
+      order = order_flat[(row*columns), columns]
+      grid['order'] << order
+      row += 1
+    end
+    board['id'] = opts['id']
+    board['buttons'] = buttons
+    board['grid'] = grid
+    board['images'] = images
+    return self.from_external(board, opts)
   end
 end

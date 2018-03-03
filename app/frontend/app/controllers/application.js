@@ -366,6 +366,10 @@ export default Controller.extend({
       var has_links = this.get('board').get('model').get('linked_boards').length > 0;
       modal.open('download-board', {type: 'obf', has_links: has_links, id: this.get('board.model.id')});
     },
+    downloadCSV: function() {
+      var has_links = this.get('board').get('model').get('linked_boards').length > 0;
+      modal.open('download-board', {type: 'csv', has_links: has_links, id: this.get('board.model.id')});
+    },
     printBoard: function() {
       var has_links = this.get('board').get('model').get('linked_boards').length > 0;
       modal.open('download-board', {type: 'pdf', has_links: has_links, id: this.get('board.model.id')});

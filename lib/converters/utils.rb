@@ -46,6 +46,8 @@ module Converters::Utils
       content_type = 'application/obf'
     elsif file_type == 'obz'
       content_type = 'application/obz'
+    elsif file_type == 'csv'
+      content_type = 'application/csv'
     elsif file_type == 'pdf'
       content_type = 'application/pdf'
     else
@@ -69,6 +71,8 @@ module Converters::Utils
           # TODO: these cases are the same, why do we have both??
           Converters::CoughDrop.to_obz(board, path, {'user' => user})
         end
+      elsif file_type == 'csv'
+        Converters::CoughDrop.to_csv(board, path)
       elsif file_type == 'obf'
         Converters::CoughDrop.to_obf(board, path)
       elsif file_type == 'pdf'
@@ -107,6 +111,8 @@ module Converters::Utils
       elsif url.match(/\.obf$/) || response.headers['Content-Type'] == 'application/obf'
         board = Converters::CoughDrop.from_obf(file.path, {'user' => user})
         result = [board]
+      elsif url.match(/\.csv$/) || response.headers['Content-Type'] == 'application/csv'
+        board = Converters::CoughDrop.from_csv(file.path, {'user' => user})
       else
         raise "Unrecognized file type: #{response.headers['Content-Type']}"
       end

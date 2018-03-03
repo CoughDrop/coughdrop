@@ -411,6 +411,9 @@
                     <a role="menuitem" tabindex="-1" href="#" {{action "downloadBoard"}}>{{t "Download Board" key="download_board"}}</a>
                   </li>
                   <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#" {{action "downloadCSV"}}>{{t "Download csv" key="download_csv"}}</a>
+                  </li>
+                  <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="#" {{action "printBoard"}}>{{t "Print Board" key="print_board"}}</a>
                   </li>
                   {{#if board.model.permissions.edit}}

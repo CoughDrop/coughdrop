@@ -165,7 +165,8 @@ class Board < ActiveRecord::Base
     Progress.as_percent(0.05, 0.9) do
       boards = Converters::Utils.remote_to_boards(user, url)
     end
-    return boards.map{|b| JsonApi::Board.as_json(b, :permissions => user) }
+    asjson = boards.map{|b| JsonApi::Board.as_json(b, :permissions => user) }
+    return asjson
   end
   
   def generate_download(user_id, type, opts)
@@ -173,7 +174,7 @@ class Board < ActiveRecord::Base
     user = User.find_by_global_id(user_id)
     Progress.update_current_progress(0.03, :generating_files)
     Progress.as_percent(0.03, 0.9) do
-      if ['obz', 'obf', 'pdf'].include?(type.to_s)
+      if ['obz', 'obf', 'pdf', 'csv'].include?(type.to_s)
         url = Converters::Utils.board_to_remote(self, user, {
           'file_type' => type.to_s,
           'include' => opts['include'] || 'this',
