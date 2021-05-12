@@ -48,7 +48,7 @@
     "eslint-plugin-ember": "^6.2.0",
     "eslint-plugin-node": "^9.0.1",
     "loader.js": "^4.7.0",
-    "lodash": ">=4.17.11",
+    "lodash": ">=4.17.21",
     "merge": ">=1.2.1",
     "qunit-dom": "^0.8.4"
   },
