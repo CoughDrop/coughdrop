@@ -146,7 +146,7 @@ GEM
       rack (>= 1.2.1)
       rake
     jasmine-core (3.5.0)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     json (2.6.2)
     listen (3.2.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
