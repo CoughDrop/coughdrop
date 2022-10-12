@@ -49,7 +49,7 @@
     "eslint-plugin-node": "^9.0.1",
     "loader.js": "^4.7.0",
     "lodash": ">=4.17.11",
-    "merge": ">=1.2.1",
+    "merge": ">=2.1.1",
     "qunit-dom": "^0.8.4"
   },
   "dependencies": {
