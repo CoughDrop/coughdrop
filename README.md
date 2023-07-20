@@ -30,7 +30,7 @@ own devices. And permission controls always stay in the hands of the user.
 
 Anyway, that's CoughDrop in a nutshell. The code is open source so you're free to
 run it yourself. We require a code contributor agreement before accepting changes into
-our repo. Boards created in CoughDrop use the Open Board Format (http://www.openboardformat.org)
+our repo. Boards created in CoughDrop use the [Open Board Format](http://www.openboardformat.org) 
 so they should export/import across instances of CoughDrop and a few other systems
 without having to dig around in the database.
 
@@ -57,14 +57,14 @@ commands such as `i18n.t('key', "string")` or `{{t "this is some test" key='key'
 CoughDrop is an actively-developed system with an API-driven Rails backend and
 a rather heavy Ember frontend. This can be intimidating, even for people
 who know these frameworks, and prevent people from contributing. If you 
-would like to contribute, you can join the (https://www.openaac.org)[OpenAAC Slack Channel]
+would like to contribute, you can join the [OpenAAC Slack Channel](https://www.openaac.org)
 and ask for ideas or pointers. In addition, here are some fairly modular
 components that I haven't had time to develop, and would love a contribution
 on:
 
 - Grammar service to support auto-tenses and middle words as communicators build simplified sentences
-- Dynamic Scene Displays framework to build photo-based interfaces for activating objects on a scene (consider using (https://github.com/CoughDrop/aac_shim)[aac_shim]
-- External API Integrations (recent news, movie tickets, etc.) (consider using (https://github.com/CoughDrop/aac_shim)[aac_shim]
+- Dynamic Scene Displays framework to build photo-based interfaces for activating objects on a scene (consider using [aac_shim](https://github.com/CoughDrop/aac_shim))
+- External API Integrations (recent news, movie tickets, etc. — consider using [aac_shim](https://github.com/CoughDrop/aac_shim) as well)
 - Core word service to return information on a word including most common part of speech, common variations/tenses, etc.
 - API documentation (yeah I know, I should have done it along the way)
 
