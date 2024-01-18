@@ -332,7 +332,9 @@ class Api::BoardsController < ApplicationController
     allowed = false
     Rails.logger.warn('checking permission')
     self.class.trace_execution_scoped(['boards/board/permission_check']) do
+      Rails.logger.info "-----------ACTION SHOW BOARD-----------------------board: #{board}"
       allowed = allowed?(board, 'view')
+      Rails.logger.info "----------------------------------Allowed: #{allowed}"
     end
     return unless allowed
     json = {}
