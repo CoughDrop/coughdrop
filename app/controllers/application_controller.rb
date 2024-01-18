@@ -140,17 +140,17 @@ class ApplicationController < ActionController::Base
   end
   
   def allowed?(obj, permission)
-    Rails.logger.info "-----------ACTION SHOW BOARD APPLICATION CONTROLLER-----------------------obj, permission: #{obj, permission}"
+    Rails.logger.warn("APPLICATION CONTROLLER------------------------obj, permission: #{obj}, #{permission}")
+
     scopes = ['*']
     if @api_user && @api_device_id
-      Rails.logger.info "-----------ACTION SHOW BOARD APPLICATION CONTROLLER-----------------------permission_scopes: #{@api_user.permission_scopes}"
+      Rails.logger.warn("APPLICATION CONTROLLER------------------------permission_scopes: #{@api_user.permission_scopes}")
       scopes = @api_user.permission_scopes || []
-      Rails.logger.info "-----------ACTION SHOW BOARD APPLICATION CONTROLLER-----------------------scopes: #{scopes}"
+      Rails.logger.warn("APPLICATION CONTROLLER------------------------scopes: #{scopes}")
     end
     if !obj || !obj.allows?(@api_user, permission, scopes)
-      Rails.logger.info "-----------ACTION SHOW BOARD APPLICATION CONTROLLER-----------------------obj, permission, scopes: #{obj, permission, scopes}"
-      Rails.logger.info "-----------ACTION SHOW BOARD APPLICATION CONTROLLER-----------------------!obj.allows?(@api_user, permission, scopes): #{!obj.allows?(@api_user, permission, scopes)}"
-
+      Rails.logger.warn("APPLICATION CONTROLLER------------------------obj, permission, scopes: #{obj}, #{permission}, #{scopes}")
+      Rails.logger.warn("APPLICATION CONTROLLER------------------------!obj.allows?(@api_user, permission, scopes): #{!obj.allows?(@api_user, permission, scopes)}")
 
       res = {error: "Not authorized.", unauthorized: true}
       if permission.instance_variable_get('@scope_rejected')
