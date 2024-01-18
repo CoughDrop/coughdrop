@@ -60,7 +60,11 @@
       </div>
     {{/if}}
     {{#if model.deleting}}
-      <p style='margin: 20px;'>{{t "Deleting Board..." key='deleting_board'}}</p>
+      <p style='margin: 20px;'>{{t "Deleting Board..." key='deleting_board'}}
+        {{#if model.deleting.board_key}}
+          <span class='text-muted'>{{model.deleting.board_key}}</span>
+        {{/if}}
+      </p>
     {{else if model.error}}
       <p style='margin: 20px;' class='text-danger'>{{t "There was an error trying to delete the board" key='error_deleting_board'}}</p>
     {{/if}}

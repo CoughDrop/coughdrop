@@ -234,12 +234,32 @@ available at [https://tools.openaac.org/inflections/inflections.html](OpenAAC).
 
 ##### Troubleshooting
 
+Need console access? Normally on Heroku you would just run 'heroku run rails console' to 
+get production access, or just 'rails console' for a local Ruby console. Since CoughDrop
+needs to ensure user data remains protected, all production requests need to be audited
+(see the model `AuditEvent`), so there are some safeguards to prevent unaudited 
+console access, and you'll need to run `bin/heroku_console` to get yourself a production
+console prompt. Many of the following examples assume they are being run from a console prompt.
+
+```
+b = Board.find_by_path('example/keyboard)
+downs = Board.find_all_by_global_id(b.downstream_board_ids)
+u = User.find_by_path('username')
+u.global_id
+u.settings['preferences']['home_board]
+s = u.log_sessions.last
+s.data['events']
+bi = ButtonImage.last
+bi.url
+```
+
 Redis memory too full? `RedisInit.size_check` also `rake extras:clear_report_tallies`
 
 Job queues backed up? `Worker.method_stats(queue_name)`
 
 Want to remove all instances of a method from the background? `Worker.prune_jobs(queue_name, method_name)`
 
+See also CODE_INVESTIGATION.md
 
 ### Contribution Ideas
 

@@ -39,7 +39,7 @@ export default modal.ModalController.extend({
     deleteBoard: function(decision) {
       var _this = this;
       var board = this.get('model.board');
-      _this.set('model.deleting', true);
+      _this.set('model.deleting', {deleting: true});
       var load_promises = [];
       var other_board_ids = [];
       if(this.get('delete_downstream')) {
@@ -53,10 +53,12 @@ export default modal.ModalController.extend({
         }  
       }
       var save = RSVP.resolve();
+      var deleted_ids = [];
       if(!this.get('model.orphans')) {
         try {
           board.deleteRecord();
           save = board.save();
+          deleted_ids.push(board.get('id'));
         } catch(e) {
           // TODO: if on the board page, it may barf when deleting the current board
         }
@@ -72,18 +74,33 @@ export default modal.ModalController.extend({
         defer.start_delete = function() {
           var find = RSVP.resolve(id);
           if(typeof id == 'string') {
-            find = _this.store.findRecord('board', id);
+            if(deleted_ids.indexOf(id) == -1) {
+              try {
+                find = _this.store.findRecord('board', id);
+              } catch(e) {
+                defer.reject({error: 'find_error', e: e});
+                return;
+              }
+            } else {
+              defer.resolve(id);
+              return;
+            }
           }
           find.then(function(b) {
             if(board.orphan || b.get('user_name') == board.get('user_name')) {
               runLater(function() {
+                if(_this.get('model.deleting')) {
+                  _this.set('model.deleting', {deleting: true, board_key: b.get('key')});
+                }
+
                 b.deleteRecord();
+                deleted_ids.push(b.get('id'));
                 b.save().then(function() {
                   defer.resolve(b);
                 }, function(err) { defer.reject(err); });  
               });
             }
-          }, function(err) { defer.reject(err); });
+          }, function(err) { defer.reject(err); });  
         };
         defer.promise.then(function() {
           next_defer();

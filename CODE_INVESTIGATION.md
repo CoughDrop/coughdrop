@@ -169,6 +169,11 @@ This is a standard Rails app, with a few exceptions. Very little Rails frontend
 support is utilized, as we mostly use it to bootstrap Ember views. The web
 app, as well as all the mobile apps, communicate via the same API for consistency.
 
+To allow for future sharding, I don't use raw database IDs in my apps. CoughDrop
+implements a `global_id` attribute which future-proofed for sharding if it
+ever came up. We ended up using for some other helpers along the way, but the
+basic format for IDs in CoughDrop is "#shardnum#_#dbid#".
+
 JSON generation for the API is all housed in `lib/json_api` rather than
 using the standard Rails JSON generators.
 
@@ -190,7 +195,8 @@ __global_id__ - helpers for CoughDrop's id lookups. Did this to allow for shardi
 easily in the future. The most common methods are `find_by_global_id` (looks up
 only by id) and `find_by_path` (looks up by id, or board key or user name, depending).
 Additionally, some records have protected ids, which means they can only be looked 
-up by id-and-nonce to prevent snooping.
+up by id-and-nonce to prevent snooping. See also `find_all_by_global_id`
+and `find_batches_by_global_id`.
 
 __media_object__ - helpers for transcoding stored media objects.
 
