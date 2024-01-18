@@ -117,15 +117,22 @@ class Device < ActiveRecord::Base
   end
 
   def permission_scopes
+
     if disabled? || missing_2fa?
+      Rails.logger.info "-----------ACTION SHOW BOARD DEVICE.RB-----------------------disabled?, missing_2fa?: #{disabled?, missing_2fa?}"
       ['none']
     elsif self.user_integration_id
+      Rails.logger.info "-----------ACTION SHOW BOARD DEVICE.RB-----------------------user_integration_id, self.settings['permission_scopes']: #{self.user_integration_id, self.settings['permission_scopes']}"
       (self.settings && self.settings['permission_scopes']) || []
     elsif self.developer_key_id && self.developer_key_id != 0
+      Rails.logger.info "-----------ACTION SHOW BOARD DEVICE.RB-----------------------developer_key_id: #{self.developer_key_id}"
       (self.settings && self.settings['permission_scopes']) || []
     elsif self.settings && self.settings['valet']
+      Rails.logger.info "-----------ACTION SHOW BOARD DEVICE.RB-----------------------self.settings['valet']: #{self.settings['valet']}"
+
       ['full', 'modeling']
     else
+      Rails.logger.info "-----------ACTION SHOW BOARD DEVICE.RB-----------------------else condition"
       ['full']
     end
   end
