@@ -27,6 +27,8 @@ module BoardCaching
         return
       end
     end
+    Rails.logger.warn("BOARD_CACHING update_available_boards-----------------------self.settings['available_private_board_ids']:")
+
     self.settings ||= {}
     self.settings['available_private_board_ids'] ||= {
       'view' => [],
