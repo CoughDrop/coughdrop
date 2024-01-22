@@ -237,7 +237,7 @@ class Api::UsersController < ApplicationController
     ExternalTracker.track_new_user(user)
 
     d = Device.find_or_create_by(:user_id => user.id, :device_key => 'default', :developer_key_id => 0)
-    Rails.logger.warn("USER CONTROLLER CREATE-----------------------device: #{d}")
+    Rails.logger.warn("USER CONTROLLER CREATE-----------------------device: #{d.first}")
 
     d.settings['ip_address'] = request.remote_ip
     d.settings['browser'] = true if request.headers['X-INSTALLED-COUGHDROP'] == 'false'

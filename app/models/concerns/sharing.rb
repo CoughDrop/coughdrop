@@ -205,34 +205,52 @@ module Sharing
     end
       
     def all_shared_board_ids_for(user, plus_editing=false)
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------user, plus_editing: #{user}, #{plus_editing}")
+
       return [] unless user
       ts = Time.now.to_i
       user.settings ||= {}
       user.settings['all_shared_board_ids'] ||= {}
       sub_key = plus_editing ? 'editing' : 'viewing'
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------user.settings['all_shared_board_ids'], sub_key: #{user.settings['all_shared_board_ids']}, #{sub_key}")
+
       if user.settings['all_shared_board_ids'][sub_key] && user.settings['all_shared_board_ids'][sub_key]['timestamp'] >= user.boards_updated_at.to_f.round(2)
+        Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------user.settings['all_shared_board_ids'][sub_key]['list']: #{user.settings['all_shared_board_ids'][sub_key]['list']}")
+
         return user.settings['all_shared_board_ids'][sub_key]['list']
       end
       all_links = UserLink.links_for(user)
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------all_links: #{all_links}")
+
       links = all_links.select{|l| l['type'] == 'board_share' }
       org_links = all_links.select{|l| ['org_user', 'org_manager', 'org_supervisor'].include?(l['type']) }
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------org_links, links: #{org_links}, #{links}")
+
       return [] if links.length == 0 && org_links.length == 0
       
       # all explicitly-shared boards, including home boards (but not sub-boards) in org settings
       shallow_board_ids = links.select{|l| plus_editing ? (l['state'] && l['state']['allow_editing']) : true }.map{|l| l['record_code'].split(/:/)[1] }
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------shallow_board_ids: #{shallow_board_ids}")
+
       if !plus_editing
         keys = []
         Organization.attached_orgs(user).each do |org|
           keys += org['home_board_keys'] || []
         end
         shallow_board_ids += Board.where(key: keys).map(&:global_id) if keys.length > 0
+        Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------shallow_board_ids: #{shallow_board_ids}")
+
       end
 
       # all explicitly-shared boards that are set to include downstream
       deep_board_shares = links.select{|l| plus_editing ? (l['state'] && l['state']['allow_editing'] && !l['state']['pending']) : true }.select{|l| l['state'] && l['state']['include_downstream'] }
       # sharing right now assumes that the board author will be the source of all shares
       deep_board_shares += links.select{|l| l['state'] && l['state']['sharer_id'] == user.global_id &&  l['state']['include_downstream'] && l['state']['allow_editing'] && !l['state']['pending'] }
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------deep_board_shares: #{deep_board_shares}")
+
       deep_board_ids = deep_board_shares.map{|l| l['record_code'].split(/:/)[1] }.uniq
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------deep_board_ids: #{deep_board_ids}")
+
 
       # get all those boards
       valid_deep_board_authors = {}
@@ -252,8 +270,11 @@ module Sharing
         end
       end
       all_deep_board_ids = all_deep_board_ids.flatten.compact.uniq
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------all_deep_board_ids: #{all_deep_board_ids}")
+      
       # Protection against performance-sucking overloads
       all_deep_board_ids = [] if all_deep_board_ids.length > 10000
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------all_deep_board_ids: #{all_deep_board_ids}")
       
       valid_deep_board_ids = []
       # for every downstream board, mark it as shared if one of the current board's authors
@@ -263,8 +284,11 @@ module Sharing
           valid_deep_board_ids << b.global_id if valid_deep_board_authors[b.global_id].include?(author_id)
         end
       end
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------valid_deep_board_ids: #{valid_deep_board_ids}")
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------shallow_board_ids: #{shallow_board_ids}")
       
       all_board_ids = (shallow_board_ids + valid_deep_board_ids).uniq
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------all_board_ids: #{all_board_ids}")
 
       if !plus_editing
         # If you update it in both cases, then it will require an update every time you toggle the plus_editing arg
@@ -275,6 +299,7 @@ module Sharing
         'list' => all_board_ids
       }
       user.save(touch: false)
+      Rails.logger.warn("SHARING all_shared_board_ids_for-----------------------all_board_ids: #{all_board_ids}")
 
       all_board_ids
     end
