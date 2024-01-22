@@ -171,6 +171,8 @@ class Organization < ActiveRecord::Base
     user.settings['pending'] = false
     user.assert_current_record!
     user.save_with_sync('add_supervisor')
+    Rails.logger.warn("ORGANIZATION add_supervisor-----------------------skip_user_available_boards_check: #{@skip_user_available_boards_check}")
+    
     user.schedule(:update_available_boards) unless @skip_user_available_boards_check
 #     self.attach_user(user, 'supervisor')
     if !pending
@@ -944,6 +946,8 @@ class Organization < ActiveRecord::Base
       raise "no licenses available" if sponsored && ((self.settings || {})['total_licenses'] || 0) <= sponsored_user_count
     end
     user.update_subscription_organization(self, pending, sponsored, eval_account)
+    Rails.logger.warn("ORGANIZATION add_user-----------------------@skip_user_available_boards_check: #{@skip_user_available_boards_check}")
+
     user.schedule(:update_available_boards) unless @skip_user_available_boards_check
     user
   end
@@ -1312,19 +1316,27 @@ class Organization < ActiveRecord::Base
           symbol_library ||= org_or_user.settings['preferred_symbols']
           if type == 'communicator'
             org_or_user.add_user(activate_for.user_name, false, !!overrides['premium'], false)
-            Rails.logger.warn("ORGANIZATION org_or_user-----------------------org_or_user, activate_for.user_name: #{org_or_user}, #{activate_for.user_name}")
+            Rails.logger.warn("ORGANIZATION org_or_user.is_a? communicator-----------------------org_or_user, activate_for.user_name: #{org_or_user}, #{activate_for.user_name}")
 
             org_or_user.reload
+            Rails.logger.warn("ORGANIZATION org_or_user.is_a? communicator-----------------------org_or_user: #{org_or_user}")
+
             if activate_for && activate_for.settings['subscription'] && !(activate_for.settings['subscription']['extras'] || {})['enabled']
               org_or_user.add_extras_to_user(activate_for.user_name) if overrides['premium'] && overrides['premium_symbols']
               activate_for.reload
+              Rails.logger.warn("ORGANIZATION org_or_user.is_a? communicator activate_for && activate_for.settings['subscription']-----------------------org_or_user: #{org_or_user}")
+
             end
           elsif type == 'supporter'
             org_or_user.add_supervisor(activate_for.user_name, false, !!overrides['premium'])
             org_or_user.reload
+            Rails.logger.warn("ORGANIZATION org_or_user.is_a? supporter----------------------org_or_user: #{org_or_user}")
+
             if activate_for && activate_for.settings['subscription'] && !(activate_for.settings['subscription']['extras'] || {})['enabled']
               org_or_user.add_extras_to_user(activate_for.user_name) if overrides['premium'] && overrides['premium_symbols']
               activate_for.reload
+              Rails.logger.warn("ORGANIZATION org_or_user.is_a? supporter activate_for && activate_for.settings['subscription']-----------------------org_or_user: #{org_or_user}")
+              
             end
           end
           org_or_user.instance_variable_set('@skip_user_available_boards_check', nil)

@@ -214,6 +214,8 @@ module Supervising
     end
     
     def link_supervisor_to_user(supervisor, user, code=nil, type=true, organization_unit_id=nil)
+      Rails.logger.warn("SUPERVISING link_supervisor_to_user-----------------------supervisor, user: #{supervisor}, #{user}")
+      
       type = 'edit' if type == true
       type ||= 'read_only'
       supervisor = user if supervisor.global_id == user.global_id
@@ -227,6 +229,8 @@ module Supervising
       org_unit_ids += UserLink.links_for(user).select{|l| l['type'] == 'supervisor' && l['record_code'] == Webhook.get_record_code(supervisor) }.map{|l| l['state'] && l['state']['organization_unit_ids'] }.compact.flatten
 
       link = UserLink.generate(user, supervisor, 'supervisor')
+      Rails.logger.warn("SUPERVISING link_supervisor_to_user-----------------------link, TYPE: #{link}, #{type}")
+
       link.data['state']['edit_permission'] = true if type == 'edit'
       link.data['state']['modeling_only'] = true if type == 'modeling_only'
       link.data['state']['supervisee_user_name'] = user.user_name
@@ -249,6 +253,9 @@ module Supervising
         supervisor.schedule(:remove_supervisors!)
         supervisor.settings['preferences']['role'] = 'supporter'
       end
+
+      Rails.logger.warn("SUPERVISING link_supervisor_to_user-----------------------supervisor.settings: #{supervisor.settings}")
+      
       supervisor.schedule_once(:update_available_boards)
       user.save_with_sync('supervisee')
       supervisor.save_with_sync('supervisor')
