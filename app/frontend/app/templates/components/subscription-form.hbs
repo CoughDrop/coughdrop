@@ -90,7 +90,7 @@
               <span style='font-size: 25px; display: block; vertical-align: middle; color: #000; padding-left: 3px;'>{{subscription.supporter_app_price}}</span>
               {{subscription.app_currency}}
             {{else}}
-              US$<span style='font-size: 40px; vertical-align: middle; color: #000; padding-left: 3px;'>25</span>
+              US$<span style='font-size: 40px; vertical-align: middle; color: #000; padding-left: 3px;'>45</span>
             {{/if}}
             <div style='margin-top: -5px; line-height: 17px;'>{{t "one-time purchase" key='one_time_purchase'}}</div>
           </td>
@@ -99,7 +99,7 @@
               <span style='font-size: 25px; display: block; vertical-align: middle; color: #000; padding-left: 3px;'>{{subscription.eval_app_price}}</span>
               {{subscription.app_currency}}
             {{else}}
-              US$<span style='font-size: 40px; vertical-align: middle; color: #000; padding-left: 3px;'>25</span>
+              US$<span style='font-size: 40px; vertical-align: middle; color: #000; padding-left: 3px;'>45</span>
             {{/if}}
             <div style='margin-top: -5px; line-height: 17px;'>{{t "one-time purchase" key='one_time_purchase'}}</div>
           </td>
@@ -136,11 +136,11 @@
             {{else}}
               <td colspan={{if subscription.app_pricing_override_no_monthly '1' '2'}}>
                 <img src="https://coughdrop.s3.amazonaws.com/icons/lessonpix_symbolstix_pcs.png" style="float: left; width: 70px; margin-top: 15px; margin-left: 20px;" alt='' />
-                {{t "add LessonPix, SymbolStix & BoardMaker (Tobii Dynavox) for US$25" key='add_premium_symbols'}}
+                {{t "add LessonPix, SymbolStix & BoardMaker (Tobii Dynavox) for US$45" key='add_premium_symbols'}}
               </td>
               <td colspan={{if subscription.app_pricing_override '1' '2'}} class='separator semi_dim'>
                 <img src="https://coughdrop.s3.amazonaws.com/icons/lessonpix_symbolstix_pcs.png" style="float: left; width: 70px; margin-top: 15px; margin-left: 20px;" alt='' />
-                {{t "add LessonPix, SymbolStix & BoardMaker (Tobii Dynavox) for US$25" key='add_premium_symbols'}}
+                {{t "add LessonPix, SymbolStix & BoardMaker (Tobii Dynavox) for US$45" key='add_premium_symbols'}}
               </td>
             {{/if}}
           </tr>
@@ -150,7 +150,7 @@
               <td colspan={{if subscription.app_pricing_override '1' '2'}} class='separator semi_dim'></td>
             {{else}}
               <td colspan={{if subscription.app_pricing_override_no_monthly '1' '2'}}>
-                {{t "add supervisor<br/>credits for US$25 each" key='add_supervisor_credits_25_usd'}}
+                {{t "add supervisor<br/>credits for US$45 each" key='add_supervisor_credits_25_usd'}}
               </td>
               <td colspan={{if subscription.app_pricing_override '1' '2'}} class='separator semi_dim'>
                 {{t "user management tools available for organizations," key='org_tools_available'}}
@@ -229,7 +229,7 @@
                   {{#if subscription.app_pricing_override}}
                     {{subscription.supporter_app_price}} {{subscription.app_currency}}<br/>{{t "purchase" key='purchase_lower'}}
                   {{else}}
-                    {{t "US$25 purchase" key='25_purchase'}}
+                    {{t "US$45 purchase" key='25_purchase'}}
                   {{/if}}
                 </button>
               {{/if}}
@@ -247,7 +247,7 @@
                   {{#if subscription.app_pricing_override}}
                     {{subscription.eval_app_price}} {{subscription.app_currency}}<br/>{{t "purchase" key='purchase_lower'}}
                   {{else}}
-                    {{t "US$25 purchase" key='25_purchase'}}
+                    {{t "US$45 purchase" key='25_purchase'}}
                   {{/if}}
                 </button>
               {{/if}}

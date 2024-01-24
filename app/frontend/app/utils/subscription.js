@@ -177,7 +177,7 @@ var Subscription = EmberObject.extend({
         return false;
       } else if(this.get('user_type') == 'communicator') {
         if(this.get('eval')) {
-          return ['eval_long_term_25', 'eval_long_term_ios'].indexOf(this.get('subscription_amount')) != -1;
+          return ['eval_long_term_45', 'eval_long_term_ios'].indexOf(this.get('subscription_amount')) != -1;
         } else {
           if(this.get('subscription_type') == 'monthly') {
             return ['monthly_6', 'monthly_9', 'monthly_ios'].indexOf(this.get('subscription_amount')) != -1;
@@ -193,7 +193,7 @@ var Subscription = EmberObject.extend({
         if(this.get('subscription_type') == 'monthly') {
           return this.get('subscription_amount') == 'slp_monthly_free';
         } else {
-          return ['slp_long_term_free', 'slp_long_term_25', 'slp_long_term_50', 'slp_long_term_145', 'slp_long_term_150', 'slp_long_term_ios'].indexOf(this.get('subscription_amount')) != -1;
+          return ['slp_long_term_free', 'slp_long_term_45', 'slp_long_term_50', 'slp_long_term_145', 'slp_long_term_150', 'slp_long_term_ios'].indexOf(this.get('subscription_amount')) != -1;
         }
       }
     }
@@ -335,7 +335,7 @@ var Subscription = EmberObject.extend({
             if(Subscription.product_types) {
               this.set('subscription_amount', 'eval_long_term_ios');
             } else {
-              this.set('subscription_amount', 'eval_long_term_25');
+              this.set('subscription_amount', 'eval_long_term_45');
             }  
           } else if(!this.get('subscription_amount') || !this.get('subscription_amount').match(/^(eval_)?long_term_/)) {
             this.set('eval', false);
@@ -368,7 +368,7 @@ var Subscription = EmberObject.extend({
           if(Subscription.product_types) {
             this.set('subscription_amount', 'slp_long_term_ios');
           } else {
-            this.set('subscription_amount', 'slp_long_term_25');
+            this.set('subscription_amount', 'slp_long_term_45');
           }
         }
         if(this.get('subscription_amount') && this.get('subscription_amount').match(/^slp_long_term/)) {
@@ -437,8 +437,8 @@ var Subscription = EmberObject.extend({
   long_term_custom: computed('subscription_amount', function() {
     return this.get('subscription_amount') == 'long_term_custom';
   }),
-  slp_long_term_25: computed('subscription_amount', function() {
-    return this.get('subscription_amount') == 'slp_long_term_25';
+  slp_long_term_45: computed('subscription_amount', function() {
+    return this.get('subscription_amount') == 'slp_long_term_45';
   }),
   long_term_amount: computed('user.lapsed', 'much_cheaper_offer', 'cheaper_offer', 'discount_percent', function() {
     var num = 295;
@@ -462,8 +462,8 @@ var Subscription = EmberObject.extend({
     function() {
       if(this.get('long_term_subcription') || !this.get('communicator_type')) { return 0; }
       var amt = 0;
-      if(this.get('extras')) { amt = amt + 25; }
-      if(this.get('included_supporters') > 0) { amt = amt + (25 * this.get('included_supporters')); }
+      if(this.get('extras')) { amt = amt + 45; }
+      if(this.get('included_supporters') > 0) { amt = amt + (45 * this.get('included_supporters')); }
       return amt;
     }
   ),
@@ -500,18 +500,18 @@ var Subscription = EmberObject.extend({
               num = Math.max(0, num * (1 - this.get('discount_percent')));
             }
             if(this.get('extras') && !this.get('free_extras') && this.get('long_term_subscription')) {
-              num = num + (25 * 100);
+              num = num + (45 * 100);
             }
             if(this.get('communicator_type') && this.get('included_supporters') && !this.get('free_supporters') && this.get('long_term_subscription')) {
-              num = num + (25 * 100 * this.get('included_supporters'));
+              num = num + (45 * 100 * this.get('included_supporters'));
             }
           }
           if(this.get('subscription_type') == 'long_term_gift') {
             if(this.get('extras') && !this.get('free_extras')) {
-              num = num + (25 * 100);
+              num = num + (45 * 100);
             }
             if(this.get('communicator_type') && this.get('included_supporters') && !this.get('free_supporters')) {
-              num = num + (25 * 100 * this.get('included_supporters'));
+              num = num + (45 * 100 * this.get('included_supporters'));
             }
             if(this.get('donate')) {
               num = num + (50 * 100);
@@ -739,7 +739,7 @@ Subscription.reopenClass({
       var amount = subscription.get('amount_in_cents');
       if(subscription.get('subscription_amount') && subscription.get('subscription_amount').match(/free/)) {
         if (subscription.get('extras')) {
-          amount = (25 * 100);
+          amount = (45 * 100);
         } else {
           return RSVP.resolve({id: 'free'});
         }
