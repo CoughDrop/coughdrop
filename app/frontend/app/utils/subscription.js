@@ -172,7 +172,7 @@ var Subscription = EmberObject.extend({
         }
       } else if(this.get('subscription_type') == 'extras') {
         if(this.get('subscription_amount') == 'long_term_custom') {
-          return this.get('subscription_custom_amount') == 25;
+          return this.get('subscription_custom_amount') == 45;
         }
         return false;
       } else if(this.get('user_type') == 'communicator') {
@@ -500,18 +500,18 @@ var Subscription = EmberObject.extend({
               num = Math.max(0, num * (1 - this.get('discount_percent')));
             }
             if(this.get('extras') && !this.get('free_extras') && this.get('long_term_subscription')) {
-              num = num + (25 * 100);
+              num = num + (45 * 100);
             }
             if(this.get('communicator_type') && this.get('included_supporters') && !this.get('free_supporters') && this.get('long_term_subscription')) {
-              num = num + (25 * 100 * this.get('included_supporters'));
+              num = num + (45 * 100 * this.get('included_supporters'));
             }
           }
           if(this.get('subscription_type') == 'long_term_gift') {
             if(this.get('extras') && !this.get('free_extras')) {
-              num = num + (25 * 100);
+              num = num + (45 * 100);
             }
             if(this.get('communicator_type') && this.get('included_supporters') && !this.get('free_supporters')) {
-              num = num + (25 * 100 * this.get('included_supporters'));
+              num = num + (45 * 100 * this.get('included_supporters'));
             }
             if(this.get('donate')) {
               num = num + (50 * 100);
@@ -739,7 +739,7 @@ Subscription.reopenClass({
       var amount = subscription.get('amount_in_cents');
       if(subscription.get('subscription_amount') && subscription.get('subscription_amount').match(/free/)) {
         if (subscription.get('extras')) {
-          amount = (25 * 100);
+          amount = (45 * 100);
         } else {
           return RSVP.resolve({id: 'free'});
         }

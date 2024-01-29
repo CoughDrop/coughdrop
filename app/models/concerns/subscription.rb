@@ -1052,7 +1052,7 @@ module Subscription
     json['free_premium'] = true if self.legacy_free_premium?
     json['extras_enabled'] = true if self.settings['subscription']['extras'] && self.settings['subscription']['extras']['enabled']
     # Allow premium symbols during the free trial, with a note about temporary status
-    json['extras_enabled'] = true if (json['grace_trial_period'] || billing_state == :trialing_supporter) && !self.settings['extras_disabled']
+    json['extras_enabled'] = false if (json['grace_trial_period'] || billing_state == :trialing_supporter) && !self.settings['extras_disabled']
     if json['plan_id']
       Purchasing.plan_map.each do |frontend_id, backend_id|
         json['plan_id'] = frontend_id if json['plan_id'] == backend_id
