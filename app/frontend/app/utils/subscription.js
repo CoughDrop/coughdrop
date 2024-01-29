@@ -172,7 +172,7 @@ var Subscription = EmberObject.extend({
         }
       } else if(this.get('subscription_type') == 'extras') {
         if(this.get('subscription_amount') == 'long_term_custom') {
-          return this.get('subscription_custom_amount') == 25;
+          return this.get('subscription_custom_amount') == 45;
         }
         return false;
       } else if(this.get('user_type') == 'communicator') {

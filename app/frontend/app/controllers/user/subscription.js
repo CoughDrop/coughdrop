@@ -66,7 +66,7 @@ export default Controller.extend({
       subscription.set('user_type', 'communicator');
       subscription.set('subscription_type', 'extras');
       subscription.set('subscription_amount', 'long_term_custom');
-      subscription.set('subscription_custom_amount', 25);
+      subscription.set('subscription_custom_amount', 45);
       Subscription.purchase(subscription).then(function(result) {
         subscribe(result, subscription.get('subscription_custom_amount'));
       });
