@@ -258,7 +258,23 @@ module Sharing
       Board.find_batches_by_global_id(deep_board_ids, {batch_size: 50}) do |board|
         # get the list of all possible downstream boards
         # NOTE: shallow clones cannot be shared
-        all_deep_board_ids += board.settings['downstream_board_ids'] || []
+        
+        # all_deep_board_ids += board.settings['downstream_board_ids'] || []
+
+        down_ids = board.settings['downstream_board_ids'] || []
+        # downstream board ids may not include ALL downstream boards, because if there are
+        # too many then we stopped tracking for performance purposes. Those may need to be
+        # re-added here.
+        if down_ids.include?(board.global_id(true).sub(/_/, '_trunc')) && down_ids.length < 100
+          if board.settings['home_board']
+            more_down_ids = []
+            Board.find_batches_by_global_id(down_ids, {batch_size: 50}) do |down_board|
+              more_down_ids += down_board.settings['downstream_board_ids'] || []
+            end
+            down_ids += more_down_ids
+          end
+        end
+        all_deep_board_ids += down_ids.uniq
 
         # for each explicitly-shared including-downstream board, mark all downstream boards
         # as possibly-shared if they were authored by any of the root board's authors
