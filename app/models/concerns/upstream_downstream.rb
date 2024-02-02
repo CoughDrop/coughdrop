@@ -1,6 +1,6 @@
 module UpstreamDownstream
   extend ActiveSupport::Concern
-  LARGE_BOARD_LIST_LIMIT = 500
+  LARGE_BOARD_LIST_LIMIT = 2000
   
   def track_downstream_boards!(already_visited_ids=[], buttons_changed=false, trigger_stamp=nil)
     already_visited_ids ||= []
