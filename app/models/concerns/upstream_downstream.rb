@@ -110,28 +110,18 @@ module UpstreamDownstream
     Rails.logger.info('generating stats and revision keys')
     # keep the closer downstream ids at the top of the list
     first_downs = []
-    #two_level_downs = []
     later_downs = []
     im_downs = (top_board.settings || {})['immediately_downstream_board_ids'] || []
     boards_with_children.each do |id, children|
       if id == 'self' || id == top_board.global_id || im_downs.include?(id)
         first_downs += children
-        #two_level_downs += children
       else
         later_downs += children
       end
     end
     downs = first_downs
-    #downs = two_level_downs
     # if there are too many downstreams, limit to two levels deep for damage control
     downs += later_downs unless later_downs.length > board_limit
-
-    # if later_downs.length > board_limit
-    #   downs += top_board.global_id(true).sub(/_/, '_trunc')
-    # else
-    #   downs += later_downs 
-    # end
-
     downs = downs.uniq.sort - [top_board.global_id]
     downstream_ids_changed = (downs != (top_board.settings['downstream_board_ids'] || []).uniq.sort)
     total_buttons = 0
