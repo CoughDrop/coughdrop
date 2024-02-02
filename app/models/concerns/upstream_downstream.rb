@@ -131,7 +131,6 @@ module UpstreamDownstream
     else
       downs += later_downs 
     end
-    Rails.logger.warn("UPSTREAM track_downstream_boards-----------------------downs: #{downs}")
 
     downs = downs.uniq.sort - [top_board.global_id]
     downstream_ids_changed = (downs != (top_board.settings['downstream_board_ids'] || []).uniq.sort)
