@@ -1,6 +1,6 @@
 module UpstreamDownstream
   extend ActiveSupport::Concern
-  LARGE_BOARD_LIST_LIMIT = 1000
+  LARGE_BOARD_LIST_LIMIT = 1300
   
   def track_downstream_boards!(already_visited_ids=[], buttons_changed=false, trigger_stamp=nil)
     already_visited_ids ||= []
@@ -50,7 +50,7 @@ module UpstreamDownstream
       Rails.logger.info('too busy and this is not a home board, try later')
       return 'delayed'
     end
-    Board.find_batches_by_global_id((top_board.settings['downstream_board_ids'] || [])[0, board_limit], batch_size: 50) do |board|
+    Board.find_batches_by_global_id((top_board.settings['downstream_board_ids'] || [])[0, board_limit], batch_size: 100) do |board|
       id = board.global_id
       # also track button counts, used for board stats
       board_edit_stats[id] = board.edit_stats
@@ -62,7 +62,7 @@ module UpstreamDownstream
     
     visited_count = 0
     while !unfound_boards.empty? && visited_count < board_limit * 1.5
-      batch = unfound_boards.slice(0, 50)
+      batch = unfound_boards.slice(0, 200)
       unfound_boards = unfound_boards - batch
       list = []
       Octopus.using(:master) do
