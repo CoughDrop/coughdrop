@@ -1,6 +1,6 @@
 module UpstreamDownstream
   extend ActiveSupport::Concern
-  LARGE_BOARD_LIST_LIMIT = 1000
+  LARGE_BOARD_LIST_LIMIT = 500
   
   def track_downstream_boards!(already_visited_ids=[], buttons_changed=false, trigger_stamp=nil)
     already_visited_ids ||= []
@@ -50,7 +50,7 @@ module UpstreamDownstream
       Rails.logger.info('too busy and this is not a home board, try later')
       return 'delayed'
     end
-    Board.find_batches_by_global_id((top_board.settings['downstream_board_ids'] || [])[0, board_limit], batch_size: 50) do |board|
+    Board.find_batches_by_global_id((top_board.settings['downstream_board_ids'] || [])[0, board_limit], batch_size: 100) do |board|
       id = board.global_id
       # also track button counts, used for board stats
       board_edit_stats[id] = board.edit_stats
@@ -62,7 +62,7 @@ module UpstreamDownstream
     
     visited_count = 0
     while !unfound_boards.empty? && visited_count < board_limit * 1.5
-      batch = unfound_boards.slice(0, 50)
+      batch = unfound_boards.slice(0, 200)
       unfound_boards = unfound_boards - batch
       list = []
       Octopus.using(:master) do
@@ -109,19 +109,27 @@ module UpstreamDownstream
     # step 2: the complete downstream list is a collection of all these ids
     Rails.logger.info('generating stats and revision keys')
     # keep the closer downstream ids at the top of the list
-    first_downs = []
+    # first_downs = []
+    two_level_downs = []
     later_downs = []
     im_downs = (top_board.settings || {})['immediately_downstream_board_ids'] || []
     boards_with_children.each do |id, children|
       if id == 'self' || id == top_board.global_id || im_downs.include?(id)
-        first_downs += children
+        # first_downs += children
+        two_level_downs += children
       else
         later_downs += children
       end
     end
-    downs = first_downs
+    # downs = first_downs
+    downs = two_level_downs
     # if there are too many downstreams, limit to two levels deep for damage control
-    downs += later_downs unless later_downs.length > board_limit
+    # downs += later_downs unless later_downs.length > board_limit
+    if later_downs.length > board_limit
+      downs << top_board.global_id(true).sub(/_/, '_trunc')
+    else
+      downs += later_downs 
+    end
     downs = downs.uniq.sort - [top_board.global_id]
     downstream_ids_changed = (downs != (top_board.settings['downstream_board_ids'] || []).uniq.sort)
     total_buttons = 0
