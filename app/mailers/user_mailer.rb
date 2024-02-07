@@ -62,6 +62,11 @@ class UserMailer < ActionMailer::Base
     @user = User.find_by_global_id(user_id)
     mail_message(@user, "Welcome!")
   end
+
+  def welcome_confirm_registration(user_id)
+    @user = User.find_by_global_id(user_id)
+    mail_message(@user, "welcome!!")
+  end
   
   def login_no_user(email)
     @email = email

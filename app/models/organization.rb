@@ -1243,21 +1243,14 @@ class Organization < ActiveRecord::Base
   def self.parse_activation_code(orig_code, activate_for=nil)
     code = orig_code.gsub(/\s+|-/, '')
     org_or_user = nil
-    if code.match(/^[8a-zA-Z]/)
-      Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------code.match(/^[8a-zA-Z]/): #{code.match(/^[8a-zA-Z]/)}")
-      
+    if code.match(/^[8a-zA-Z]/)      
       ac = ActivationCode.lookup(code)
-      Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------ac: #{ac}")
-
       if ac
         org_or_user = ac.find_record
-        settings_key = "a#{ac.id}"
-        Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------org_or_user, settings_key: #{org_or_user}, #{settings_key}")
-        
+        settings_key = "a#{ac.id}"   
       end
     else
       code = code.gsub(/o/i, '0')
-      Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------code.gsub(/o/i, '0'): #{code}")
 
       klass = code[0] == '9' ? User : Organization
       type = code[0] == '2' ? 'supporter' : 'communicator'
@@ -1271,31 +1264,25 @@ class Organization < ActiveRecord::Base
       settings_key = "#{code[0]}#{rnd}"
       sha = verifier[4..-1]
       org_or_user = klass.find_by_global_id(global_id)
-      Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------klass, type, rest, id_part, verifier, shard, global_id, settings_key, org_or_user: #{klass}, #{type}, #{rest}, #{id_part}, #{verifier}, #{shard}, #{global_id}, #{settings_key}, #{org_or_user}")
-      Rails.logger.warn("ORGANIZATION parse_activation_code-----------------------GoSecure.sha512: #{GoSecure.sha512("#{global_id}-#{rnd}-#{type}", org_or_user.settings['activation_nonce'] || 'bad_nonce')[0, 5].to_i(16).to_s[0, 6].rjust(6, '0')}")
       
       org_or_user = nil unless org_or_user && sha == GoSecure.sha512("#{global_id}-#{rnd}-#{type}", org_or_user.settings['activation_nonce'] || 'bad_nonce')[0, 5].to_i(16).to_s[0, 6].rjust(6, '0')
     end
 
     if org_or_user 
       overrides = (org_or_user.settings['activation_settings'] || {})[settings_key]
-      Rails.logger.warn("ORGANIZATION org_or_user-----------------------overrides: #{overrides}")
 
       return false unless overrides
       if overrides['limit'] && (overrides['user_ids'] || []).length >= overrides['limit']
 
         overrides['disabled'] = true
-        Rails.logger.warn("ORGANIZATION org_or_user-----------------------overrides['disabled'] limit: #{overrides['disabled']}")
       elsif overrides['expires'] && overrides['expires'] < Time.now.to_i
         overrides['disabled'] = true
-        Rails.logger.warn("ORGANIZATION org_or_user-----------------------overrides['disabled'] expires: #{overrides['disabled']}")
 
       end
       type ||= overrides['user_type'] || 'communicator'
       ovr = overrides.slice('home_board_key', 'locale', 'symbol_library', 'premium', 'premium_symbols', 'supervisors')
       copier = nil
       progress = nil
-      Rails.logger.warn("ORGANIZATION org_or_user-----------------------type, ovr: #{type}, #{ovr}")
 
       if activate_for && !overrides['disabled']
         Rails.logger.warn("ORGANIZATION org_or_user-----------------------activate_for, !overrides['disabled']: #{activate_for}, #{!overrides['disabled']}")

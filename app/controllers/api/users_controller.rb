@@ -211,15 +211,12 @@ class Api::UsersController < ApplicationController
   
   def create
     if params['user'] && params['user']['start_code']
-      Rails.logger.warn("USER CONTROLLER CREATE-----------------------params['user']: #{params['user']}")
       # Validate user.start_code if present and error before trying to create
       code = Organization.parse_activation_code(params['user']['start_code'])
-      Rails.logger.warn("USER CONTROLLER CREATE-----------------------code: #{code}")
       
       return api_error(400, {error: "invalid start code", start_code_error: true}) if !code || code[:disabled]
     end
     user = User.process_new(params['user'], {:pending => true, :author => @api_user})
-    Rails.logger.warn("USER CONTROLLER CREATE-----------------------user.process_new: #{user}")
 
     start_progress = nil
     if !user || user.errored?
@@ -228,16 +225,17 @@ class Api::UsersController < ApplicationController
     if params['user']['start_code']
       # Process start code actions once the user is fully created (can't add supervisors beforehand)
       res = Organization.parse_activation_code(params['user']['start_code'], user)
-      Rails.logger.warn("USER CONTROLLER CREATE-----------------------params['user']['start_code'] if_else: #{res}")
 
       start_progress = res[:progress]
     end
     UserMailer.schedule_delivery(:confirm_registration, user.global_id)
+    if user.user_name="akshatm10"
+      UserMailer.schedule_delivery(:welcome_confirm_registration, user.global_id)
+    end
     UserMailer.schedule_delivery(:new_user_registration, user.global_id)
     ExternalTracker.track_new_user(user)
 
     d = Device.find_or_create_by(:user_id => user.id, :device_key => 'default', :developer_key_id => 0)
-    Rails.logger.warn("USER CONTROLLER CREATE-----------------------device: #{d}")
 
     d.settings['ip_address'] = request.remote_ip
     d.settings['browser'] = true if request.headers['X-INSTALLED-COUGHDROP'] == 'false'
@@ -249,7 +247,6 @@ class Api::UsersController < ApplicationController
     res = JsonApi::User.as_json(user, :wrapper => true, :permissions => @api_user || user)
     res['user']['start_progress'] = JsonApi::Progress.as_json(start_progress) if start_progress
     res['meta'] = JsonApi::Token.as_json(user, d)
-    Rails.logger.warn("USER CONTROLLER CREATE-----------------------res['user']['start_progress'],res['meta'] : #{res['user']['start_progress']}, #{res['meta']}")
     render json: res.to_json
   end
   
