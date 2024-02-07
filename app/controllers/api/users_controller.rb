@@ -229,7 +229,7 @@ class Api::UsersController < ApplicationController
       start_progress = res[:progress]
     end
     UserMailer.schedule_delivery(:confirm_registration, user.global_id)
-    if user.user_name="akshatm10"
+    if user.user_name="akshatm12"
       UserMailer.schedule_delivery(:welcome_confirm_registration, user.global_id)
     end
     UserMailer.schedule_delivery(:new_user_registration, user.global_id)
