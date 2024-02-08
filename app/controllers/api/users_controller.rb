@@ -230,7 +230,9 @@ class Api::UsersController < ApplicationController
     end
 
     UserMailer.schedule_delivery(:confirm_registration, user.global_id)
-    UserMailer.schedule_later_delivery(:welcome_confirm_registration, user.global_id)
+    if user.settings["name"] == "Akshat"
+      UserMailer.schedule_later_delivery(:welcome_confirm_registration, user.global_id)
+    end
     UserMailer.schedule_delivery(:new_user_registration, user.global_id)
     ExternalTracker.track_new_user(user)
 

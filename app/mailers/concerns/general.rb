@@ -11,6 +11,17 @@ module General
       mail(opts)
     end
   end
+
+  def mail_message_with_bcc(user, subject, channel_type=nil)
+    channel_type ||= caller_locations(1,1)[0].label
+    return nil unless user && user.settings && !user.settings['email'].blank? && user.settings['email'].match(/\@/)
+    from = JsonApi::Json.current_domain['settings']['admin_email']
+    user.channels_for(channel_type).each do |path|
+      opts = {to: path, subject: "#{app_name} - #{subject}", bcc: "akshatm@chetu.com", reply_to: "support@coughdrop.com"}
+      opts[:from] = from if !from.blank?
+      mail(opts)
+    end
+  end
   
   def full_domain_enabled
     !!JsonApi::Json.current_domain['settings']['full_domain']
@@ -27,7 +38,7 @@ module General
 
     def schedule_later_delivery(mail_method, *args)
       # Schedule the email to be sent after the specified delay
-      self.send(mail_method, *args).deliver_later(wait: 4.days)
+      self.send(mail_method, *args).deliver_later(wait: 2.minutes)
     end
   
     def deliver_message(method_name, *args)
