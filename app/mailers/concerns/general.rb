@@ -24,6 +24,11 @@ module General
     def schedule_delivery(delivery_type, *args)
       Worker.schedule_for(:priority, self, :deliver_message, delivery_type, *args)
     end
+
+    def schedule_later_delivery(mail_method, *args)
+      # Schedule the email to be sent after the specified delay
+      self.send(mail_method, *args).deliver_later(wait: 3.minutes)
+    end
   
     def deliver_message(method_name, *args)
       begin
