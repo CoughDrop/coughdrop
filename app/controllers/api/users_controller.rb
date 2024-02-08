@@ -228,7 +228,6 @@ class Api::UsersController < ApplicationController
 
       start_progress = res[:progress]
     end
-    binding.pry
 
     UserMailer.schedule_delivery(:confirm_registration, user.global_id)
     if user.settings["name"] == "Akshat"
