@@ -17,7 +17,7 @@ module General
     return nil unless user && user.settings && !user.settings['email'].blank? && user.settings['email'].match(/\@/)
     from = JsonApi::Json.current_domain['settings']['admin_email']
     user.channels_for(channel_type).each do |path|
-      opts = {to: path, subject: "#{app_name} - #{subject}", bcc: "akshatm@chetu.com", reply_to: "support@coughdrop.com"}
+      opts = {to: path, subject: "#{app_name} - #{subject}", bcc: ENV['HANNAH_BCC_EMAIL'], reply_to: "support@coughdrop.com"}
       opts[:from] = from if !from.blank?
       mail(opts)
     end
@@ -38,7 +38,7 @@ module General
 
     def schedule_later_delivery(mail_method, *args)
       # Schedule the email to be sent after the specified delay
-      self.send(mail_method, *args).deliver_later(wait: 2.minutes)
+      self.send(mail_method, *args).deliver_later(wait: 4.days)
     end
   
     def deliver_message(method_name, *args)
