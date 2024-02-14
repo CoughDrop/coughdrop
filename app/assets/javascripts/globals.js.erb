@@ -20,3 +20,9 @@ window.user_preferences = <%= User.preference_defaults.to_json %>;
 <% if ENV['MAPS_KEY'] %>
   window.maps_key = "<%= ENV['MAPS_KEY'] %>";
 <% end %>
+<% if ENV['MODERN_VIEW_HOST'] %>
+  window.coughdrop_modern_view_host = "<%= ENV['MODERN_VIEW_HOST'] %>";
+<% end %>
+<% if ENV['CLASSIC_VIEW_HOST'] %>
+  window.coughdrop_classsic_view_host = "<%= ENV['CLASSIC_VIEW_HOST'] %>";
+<% end %>

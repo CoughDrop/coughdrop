@@ -63,6 +63,7 @@ Coughdrop::Application.routes.draw do
   post 'token' => 'session#token'
   post 'wait/token' => 'session#token_wait'
 
+  get 'jum_to_beta' => 'boards#jum_to_beta'
   get 'lessons/:lesson_id/:lesson_code/:user_token' => 'boards#lesson'
   
   # if Rails.env.production?
