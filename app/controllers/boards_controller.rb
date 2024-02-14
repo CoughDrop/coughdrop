@@ -124,4 +124,12 @@ class BoardsController < ApplicationController
     @meta_record = utterance && utterance.meta_record
     render :index
   end
+
+  def jum_to_beta
+    if params['access_token']
+      u = User.find_by(user_name: params[:user_name])
+      d = Device.find_or_create_by(:user_id => u.id, :developer_key_id => 0, :device_key => params[:device_key])
+      render json: JsonApi::Token.as_json(u, d).to_json
+    end
+  end
 end
