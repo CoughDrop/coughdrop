@@ -211,6 +211,8 @@ module Passwords
   end
 
   def valid_password?(guess)
+    Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD------------------------GUESS: #{guess}")
+
     self.settings ||= {}
     guess ||= ''
     res = false
@@ -235,8 +237,11 @@ module Passwords
     else
       if self.settings['password'] && self.settings['password']['pre_hash_algorithm'] && !guess.match(/^hashed\?:\#/)
         guess = pre_hashed_password(guess)
+        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD else condition------------------------GUESS: #{guess}")
+
       end
         res = GoSecure.matches_password?(guess, self.settings['password'])
+        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD else condition------------------------res: #{res}")
       if res && self.schedule_deletion_at
         # prevent auto-deletion whenever a user logs in
         self.schedule_deletion_at = nil
@@ -245,12 +250,15 @@ module Passwords
       if res && !guess.match(/^hashed\?:\#/)
         hashed = pre_hashed_password(guess)
         self.generate_password(hashed)
+        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res && !guess.match------------------------self.generate_password(hashed): #{self.generate_password(hashed)}")
         self.save
       elsif res && GoSecure.outdated_password?(self.settings['password'])
         self.generate_password(guess)
+        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res && GoSecure.outdated_password?------------------------self.generate_password(guess): #{self.generate_password(guess)}")
         self.save
       end
     end
+    Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res response------------------------res: #{res}")
     res
   end
 
@@ -269,6 +277,8 @@ module Passwords
     password = pre_hashed_password(password) if !password.match(/^hashed\?:\#/)
     self.settings ||= {}
     self.settings['password'] = GoSecure.generate_password(password)
+    Rails.logger.warn("ACTION PASSWORD generate_password------------------------self.settings['password'] : #{self.settings['password']}")
+
     self.settings['password']['pre_hash_algorithm'] = 'sha512'
   end
 end
