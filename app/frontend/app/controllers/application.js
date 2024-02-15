@@ -413,7 +413,7 @@ export default Controller.extend({
   actions: {
     onMoveToModernView() {
       if (window.coughdrop_modern_view_host) {
-        const betaDomainURL = coughdrop_modern_view_host + "/new-login";
+        const betaDomainURL = window.coughdrop_modern_view_host + "/new-login";
         const user_name = session.user_name;
         const device_key = stashes
           .get_raw("coughDropDeviceId")
