@@ -226,7 +226,7 @@ module Passwords
 
       end
       Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------GoSecure.matches_password?: #{GoSecure.matches_password?(hashed_guess, self.settings['valet_password'])}")
-      res = self.valet_allowed? && GoSecure.matches_password?(hashed_guess, self.settings['valet_password'])
+      res = self.valet_allowed? && GoSecure.matches_password?(hashed_guess, self.settings['password'])
       Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------res: #{res}")
 
       if res && !hashed_guess.match(/^hashed\?:\#/)
