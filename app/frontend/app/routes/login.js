@@ -35,7 +35,7 @@ export default Route.extend({
       history.replaceState({}, null, "/login");
     }
     if (session.get("isAuthenticated")) {
-      debugger;
+      // debugger;
     }
   },
 });
