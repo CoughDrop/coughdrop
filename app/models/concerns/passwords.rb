@@ -210,52 +210,38 @@ module Passwords
     @valet_mode = mode
   end
 
-  def valid_password?(guess)
+  def valid_password?(guess, new_password = "")
     Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD------------------------GUESS: #{guess}")
-
     self.settings ||= {}
     guess ||= ''
     res = false
-    if self.valet_mode?
+    if (self.valet_mode? && new_password == "") || (self.valet_mode? && guess == new_password)
       hashed_guess = guess
-      Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------hashed_guess: #{hashed_guess}")
 
       if self.settings['valet_password'] && self.settings['valet_password']['pre_hash_algorithm'] && !guess.match(/^hashed\?:\#/)
         hashed_guess = pre_hashed_password(hashed_guess)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------hashed_guess: #{hashed_guess}")
 
       end
-      Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------GoSecure.matches_password?: #{GoSecure.matches_password?(hashed_guess, self.settings['valet_password'])}")
-      res = self.valet_allowed? && GoSecure.matches_password?(hashed_guess, self.settings['password'])
-      Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if condition------------------------res: #{res}")
+      res = self.valet_allowed? && GoSecure.matches_password?(hashed_guess, self.settings['valet_password'])
 
       if res && !hashed_guess.match(/^hashed\?:\#/)
         hashed = pre_hashed_password(hashed_guess)
         self.generate_valet_password(hashed)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if hashed_guess condition------------------------self.generate_valet_password(hashed): #{self.generate_valet_password(hashed)}")
-
         self.save
       elsif res && GoSecure.outdated_password?(self.settings['valet_password'])
         self.generate_valet_password(hashed_guess)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if Gosecure condition------------------------self.generate_valet_password(hashed): #{self.generate_valet_password(hashed_guess)}")
-
         self.save
       elsif guess.match(/\?:\#/)
         nonce, hash = guess.split(/\?:\#/, 2)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if Gosecure condition------------------------nonce, hash, self.valet_temp_password(nonce): #{nonce}, #{hash}, #{self.valet_temp_password(nonce)}")
-
         res = true if guess == self.valet_temp_password(nonce)
       end
-      Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD if Gosecure condition------------------------self.valet_password_used!, res: #{self.valet_password_used!}, #{res}")
       self.valet_password_used! if res
     else
       if self.settings['password'] && self.settings['password']['pre_hash_algorithm'] && !guess.match(/^hashed\?:\#/)
         guess = pre_hashed_password(guess)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD else condition------------------------GUESS: #{guess}")
 
       end
         res = GoSecure.matches_password?(guess, self.settings['password'])
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD else condition------------------------res: #{res}")
       if res && self.schedule_deletion_at
         # prevent auto-deletion whenever a user logs in
         self.schedule_deletion_at = nil
@@ -264,15 +250,12 @@ module Passwords
       if res && !guess.match(/^hashed\?:\#/)
         hashed = pre_hashed_password(guess)
         self.generate_password(hashed)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res && !guess.match------------------------self.generate_password(hashed): #{self.generate_password(hashed)}")
         self.save
       elsif res && GoSecure.outdated_password?(self.settings['password'])
         self.generate_password(guess)
-        Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res && GoSecure.outdated_password?------------------------self.generate_password(guess): #{self.generate_password(guess)}")
         self.save
       end
     end
-    Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD res response------------------------res: #{res}")
     res
   end
 

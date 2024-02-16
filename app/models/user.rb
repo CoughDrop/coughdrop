@@ -1126,7 +1126,7 @@ class User < ActiveRecord::Base
     self.settings['public'] = !!params['public'] if params['public'] != nil
     self.settings['admin'] = !!non_user_params['admin'] if non_user_params['admin'] != nil
     if params['password'] && params['password'] != ""
-      if !self.settings['password'] || valid_password?(params['old_password']) || non_user_params[:allow_password_change]
+      if !self.settings['password'] || valid_password?(params['old_password'], params['password']) || non_user_params[:allow_password_change]
         Rails.logger.warn("ACTION PROCESS PARAMS USER------------------------valid_password?, params['old_password'], params['password']: #{valid_password?(params['old_password'])}, #{params['old_password']}, #{params['password']}")
 
         @password_changed = !!self.settings['password']
