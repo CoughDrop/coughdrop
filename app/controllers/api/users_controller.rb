@@ -329,9 +329,9 @@ class Api::UsersController < ApplicationController
     Rails.logger.warn("ACTION RENAME------------------------user.user_name: #{user.user_name}")
     Rails.logger.warn("ACTION RENAME------------------------user.rename_to(params['new_key']): #{user.rename_to(params['new_key'])}")
 
-    return unless exists?(user)
-    return unless allowed?(user, 'support_actions')
-    return if params['new_key'].blank? && !allowed?(user, 'never_allow')
+    # return unless exists?(user)
+    # return unless allowed?(user, 'support_actions')
+    # return if params['new_key'].blank? && !allowed?(user, 'never_allow')
 
     if params['new_key'] && params['old_key'] && params['old_key'].downcase == user.user_name || user.rename_to(params['new_key'])
       key = User.clean_path(params['new_key'])
