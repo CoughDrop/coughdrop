@@ -9,6 +9,7 @@ module JsonApi::Token
     # TODO: there are times where we shouldn't include user_name and user_id, yes?
     json['user_name'] = user.user_name
     json['user_id'] = user.global_id
+    json['current_web_version'] = user.settings['current_web_version'].present? ? user.settings['current_web_version'] : ENV['CLASSIC_VIEW_HOST']
     json['modeling_session'] = user.valet_mode?
     json['missing_2fa'] = true if (device.settings['2fa'] || {})['pending']
     if json['missing_2fa']

@@ -674,7 +674,7 @@ export default Controller.extend({
         if(old_key != _this.get('model.user_name')) { return; }
 
         _this.set('new_user_name', {renaming: true});
-        persistence.ajax('/api/v1/users/' + this.get('model.user_name') + '/rename', {
+        persistence.ajax('/api/v1/users/' + this.get('model.id') + '/rename', {
           type: 'POST',
           data: {
             old_key: _this.get('model.user_name'),

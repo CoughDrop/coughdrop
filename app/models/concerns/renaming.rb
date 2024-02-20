@@ -25,11 +25,21 @@ module Renaming
     record = self
     if self.class.find_by_path(to_key)
       @collision_error = true
+      Rails.logger.warn("ACTION RENAMING rename_to------------------------collision_error: #{@collision_error}")
+
       return false
     elsif to_key.match(/^\d/)
       @invalid_name = true
+      Rails.logger.warn("ACTION RENAMING rename_to------------------------to_key: #{to_key}")
+
       return false
     end
+    Rails.logger.warn("ACTION RENAMING rename_to------------------------collision_error: #{@collision_error}")
+
+    Rails.logger.warn("ACTION RENAMING rename_to------------------------to_key: #{to_key}")
+    Rails.logger.warn("ACTION RENAMING rename_to------------------------from_key: #{from_key}")
+
+
     if record_type == 'board'
       old_prefix = from_key.split(/\//)[0]
       new_prefix = to_key.split(/\//)[0]

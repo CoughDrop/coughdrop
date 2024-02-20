@@ -210,16 +210,20 @@ module Passwords
     @valet_mode = mode
   end
 
-  def valid_password?(guess)
+  def valid_password?(guess, new_password = "")
+    Rails.logger.warn("ACTION PASSWORD VALID_PASSWORD------------------------GUESS: #{guess}")
     self.settings ||= {}
     guess ||= ''
     res = false
-    if self.valet_mode?
+    if (self.valet_mode? && new_password == "") || (self.valet_mode? && guess == new_password)
       hashed_guess = guess
+
       if self.settings['valet_password'] && self.settings['valet_password']['pre_hash_algorithm'] && !guess.match(/^hashed\?:\#/)
         hashed_guess = pre_hashed_password(hashed_guess)
+
       end
       res = self.valet_allowed? && GoSecure.matches_password?(hashed_guess, self.settings['valet_password'])
+
       if res && !hashed_guess.match(/^hashed\?:\#/)
         hashed = pre_hashed_password(hashed_guess)
         self.generate_valet_password(hashed)
@@ -235,6 +239,7 @@ module Passwords
     else
       if self.settings['password'] && self.settings['password']['pre_hash_algorithm'] && !guess.match(/^hashed\?:\#/)
         guess = pre_hashed_password(guess)
+
       end
         res = GoSecure.matches_password?(guess, self.settings['password'])
       if res && self.schedule_deletion_at
@@ -269,6 +274,8 @@ module Passwords
     password = pre_hashed_password(password) if !password.match(/^hashed\?:\#/)
     self.settings ||= {}
     self.settings['password'] = GoSecure.generate_password(password)
+    Rails.logger.warn("ACTION PASSWORD generate_password------------------------self.settings['password'] : #{self.settings['password']}")
+
     self.settings['password']['pre_hash_algorithm'] = 'sha512'
   end
 end
