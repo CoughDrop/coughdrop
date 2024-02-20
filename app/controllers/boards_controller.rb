@@ -128,6 +128,8 @@ class BoardsController < ApplicationController
   def jum_to_beta
     if params['access_token']
       u = User.find_by(user_name: params[:user_name])
+      u.settings['current_web_version'] = ENV['CLASSIC_VIEW_HOST']
+      u.save
       d = Device.find_or_create_by(:user_id => u.id, :developer_key_id => 0, :device_key => params[:device_key])
       render json: JsonApi::Token.as_json(u, d).to_json
     end
