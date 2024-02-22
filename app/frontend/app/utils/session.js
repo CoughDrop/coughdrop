@@ -11,6 +11,7 @@ import coughDropExtras from "./extras";
 import app_state from "./app_state";
 import i18n from "./i18n";
 import modal from "./modal";
+import { redirect_to_modern_view, isModernViewURL } from "./redirect_login";
 
 var session = EmberObject.extend({
   setup: function (application) {
@@ -128,12 +129,21 @@ var session = EmberObject.extend({
 
         persistence.ajax("/token", { method: "POST", data: data }).then(
           function (response) {
-            if (response && response.auth_redirect) {
-              return resolve({ redirect: response.auth_redirect });
+            console.log("/token api response", response);
+            if (isModernViewURL(response.current_web_version)) {
+              console.log(
+                "redirect to modern view url, session util",
+                window.location.href
+              );
+              redirect_to_modern_view(response);
             } else {
-              session.confirm_authentication(response).then(function () {
-                resolve(response);
-              });
+              if (response && response.auth_redirect) {
+                return resolve({ redirect: response.auth_redirect });
+              } else {
+                session.confirm_authentication(response).then(function () {
+                  resolve(response);
+                });
+              }
             }
           },
           function (data) {

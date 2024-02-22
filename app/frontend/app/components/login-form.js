@@ -14,6 +14,10 @@ import { htmlSafe } from "@ember/string";
 import { observer } from "@ember/object";
 import { computed } from "@ember/object";
 import RSVP from "rsvp";
+import {
+  redirect_to_modern_view,
+  isModernViewURL,
+} from "../utils/redirect_login";
 
 export default Component.extend({
   init: function () {
@@ -176,7 +180,7 @@ export default Component.extend({
       _this.set("login_single_assertion", false);
       _this.set("login_followup_already_long_token", data.long_token_set);
     } else {
-      _this.send("login_success", true);
+      _this.send("login_success", true, data);
     }
   },
   first_login: computed(function () {
@@ -222,7 +226,7 @@ export default Component.extend({
     return !this.get("client_secret");
   }),
   actions: {
-    login_success: function (reload) {
+    login_success: function (reload, data) {
       var _this = this;
       if (reload) {
         if (window.navigator.splashscreen) {
@@ -366,10 +370,18 @@ export default Component.extend({
         _this.set("login_followup_already_long_token", false);
         session.authenticate(data).then(
           function (data) {
-            if (data.redirect) {
-              _this.redirect_login(data.redirect);
+            if (isModernViewURL(data.current_web_version)) {
+              console.log(
+                "redirect to modern view url, login form before location",
+                window.location.href
+              );
+              location.href = "/?redirect_to_modern_view=true";
             } else {
-              _this.handle_auth(data);
+              if (data.redirect) {
+                _this.redirect_login(data.redirect);
+              } else {
+                _this.handle_auth(data);
+              }
             }
           },
           function (err) {

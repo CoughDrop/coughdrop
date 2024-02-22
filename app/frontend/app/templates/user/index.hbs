@@ -1,180 +1,295 @@
 <div class="skinny_bio">
-  {{partial 'user_summary'}}
+  {{partial "user_summary"}}
 </div>
 {{#if model.permissions.view_detailed}}
   {{#if model.permissions.delete}}
     {{#if model.pending_org}}
-      <div class='alert alert-info'>
-        {{t "%{org} wants to support this user as part of their organization. This addition must be approved before it is complete. If approved, the organization will have access to profile information for this user." key='confirm_pending_org2' org=model.pending_org.name}}
+      <div class="alert alert-info">
+        {{t
+          "%{org} wants to support this user as part of their organization. This addition must be approved before it is complete. If approved, the organization will have access to profile information for this user."
+          key="confirm_pending_org2"
+          org=model.pending_org.name
+        }}
         {{#if model.pending_org.sponsored}}
-          {{t "The organization will also sponsor this account, meaning it will be free as long as the organization remains a sponsor." key='org_sponsored'}}
+          {{t
+            "The organization will also sponsor this account, meaning it will be free as long as the organization remains a sponsor."
+            key="org_sponsored"
+          }}
         {{/if}}
-        <br/><br/>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' 'user_approve'}}>{{t "Approve %{org}" org=model.pending_org.name}}</button>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' 'user_reject'}}>{{t "Deny Access"}}</button>
+        <br /><br />
+        <button
+          class="btn btn-default"
+          {{action "approve_or_reject_org" "user_approve"}}
+        >{{t "Approve %{org}" org=model.pending_org.name}}</button>
+        <button
+          class="btn btn-default"
+          {{action "approve_or_reject_org" "user_reject"}}
+        >{{t "Deny Access"}}</button>
       </div>
     {{else if model.pending_supervision_org}}
-      <div class='alert alert-info'>
-        {{t "%{org} wants to add you as a supervisor to their organization. Organization admins will be able to see your basic profile information, including the communicators in the organization that you are currently supervising." key='confirm_pending_supervision_org' org=model.pending_supervision_org.name}}
-        <br/><br/>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' 'supervisor_approve'}}>{{t "Approve %{org}" org=model.pending_supervision_org.name}}</button>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' 'supervisor_reject'}}>{{t "Deny Access"}}</button>
+      <div class="alert alert-info">
+        {{t
+          "%{org} wants to add you as a supervisor to their organization. Organization admins will be able to see your basic profile information, including the communicators in the organization that you are currently supervising."
+          key="confirm_pending_supervision_org"
+          org=model.pending_supervision_org.name
+        }}
+        <br /><br />
+        <button
+          class="btn btn-default"
+          {{action "approve_or_reject_org" "supervisor_approve"}}
+        >{{t "Approve %{org}" org=model.pending_supervision_org.name}}</button>
+        <button
+          class="btn btn-default"
+          {{action "approve_or_reject_org" "supervisor_reject"}}
+        >{{t "Deny Access"}}</button>
       </div>
     {{else if model.pending}}
-      <div class='alert alert-success'>
-        {{t "Welcome to %app_name%! Watch for an email from us in your inbox. You'll need to confirm registration within seven days of registering or your account will be disabled." key='welcome_remember_confirm'}}
+      <div class="alert alert-success">
+        {{t
+          "Welcome to %app_name%! Watch for an email from us in your inbox. You'll need to confirm registration within seven days of registering or your account will be disabled."
+          key="welcome_remember_confirm"
+        }}
         {{#if resentConfirmation}}
-          {{t "Confirmation Email Sent!" key='confirmation_sent'}}
+          {{t "Confirmation Email Sent!" key="confirmation_sent"}}
         {{else}}
-          <a href="#" class="alert-link" {{action "resendConfirmation"}}>{{t "Re-Send Confirmation Email" key='re_send_confirmation'}}</a>
+          <a href="#" class="alert-link" {{action "resendConfirmation"}}>{{t
+              "Re-Send Confirmation Email"
+              key="re_send_confirmation"
+            }}</a>
         {{/if}}
       </div>
     {{else if model.expired}}
       {{#if app_state.feature_flags.subscriptions}}
-        <div style='margin-bottom: 10px;'>
-          <span class="glyphicon glyphicon-info-sign" style="font-size: 20px; vertical-align: middle;"></span>
-          {{#link-to 'user.subscription' model.user_name}}
-          {{t "This user's free preview has ended. Please purchase a premium account." key='this_user_needs_to_subscribe'}}
+        <div style="margin-bottom: 10px;">
+          <span
+            class="glyphicon glyphicon-info-sign"
+            style="font-size: 20px; vertical-align: middle;"
+          ></span>
+          {{#link-to "user.subscription" model.user_name}}
+            {{t
+              "This user's free preview has ended. Please purchase a premium account."
+              key="this_user_needs_to_subscribe"
+            }}
           {{/link-to}}
         </div>
       {{/if}}
     {{else}}
       {{#if blank_slate}}
-        <h2>{{t "Getting Started" key='welcome_message'}}</h2>
+        <h2>{{t "Getting Started" key="welcome_message"}}</h2>
         <p>
-          {{t "Welcome to %app_name%! This is your profile summary, you can always get to it by hitting the button in the top right corner." key='welcome_message2'}}
+          {{t
+            "Welcome to %app_name%! This is your profile summary, you can always get to it by hitting the button in the top right corner."
+            key="welcome_message2"
+          }}
           {{#unless model.public}}
-            {{t "If you want others to be able to see your profile and easily find your public board then hit 'profile' on the left and make your account public." key='welcome_message_not_public'}}
+            {{t
+              "If you want others to be able to see your profile and easily find your public board then hit 'profile' on the left and make your account public."
+              key="welcome_message_not_public"
+            }}
           {{/unless}}
         </p>
       {{else}}
         {{#unless model.preferences.home_board.key}}
-          <h2>{{t "Getting Started" key='welcome_message'}}</h2>
+          <h2>{{t "Getting Started" key="welcome_message"}}</h2>
         {{/unless}}
       {{/if}}
       {{#unless model.preferences.home_board.key}}
-        <p>{{t "You haven't selected a home board yet. Here's a few pre-built boards that you may like. Or you can always create your own! If you like one, just open it and hit 'Set as Home'." key='some_starting_boards'}}</p>
+        <p>{{t
+            "You haven't selected a home board yet. Here's a few pre-built boards that you may like. Or you can always create your own! If you like one, just open it and hit 'Set as Home'."
+            key="some_starting_boards"
+          }}</p>
         <div style="margin-bottom: 50px;">
-        {{#if model.starting_boards}}
-          <div class="row" style="margin-left: -5px; margin-right: 0;">
-          {{#each model.starting_boards as |board|}}
-            <div class="col-sm-2 col-xs-4 simple_board_holder">
-              {{board-icon board=board}}
+          {{#if model.starting_boards}}
+            <div class="row" style="margin-left: -5px; margin-right: 0;">
+              {{#each model.starting_boards as |board|}}
+                <div class="col-sm-2 col-xs-4 simple_board_holder">
+                  {{board-icon board=board}}
+                </div>
+              {{/each}}
             </div>
-          {{/each}}
-          </div>
-        {{/if}}
-        {{#link-to "home-boards" class="btn btn-default"}}{{t "Help me Choose" key='help_me_choose'}}{{/link-to}}
-        <button class="btn btn-default" {{action "newBoard"}}>{{t "Create a New Board" key='create_a_new_board'}}</button>
+          {{/if}}
+          {{#link-to "home-boards" class="btn btn-default"}}{{t
+              "Help me Choose"
+              key="help_me_choose"
+            }}{{/link-to}}
+          <button class="btn btn-default" {{action "newBoard"}}>{{t
+              "Create a New Board"
+              key="create_a_new_board"
+            }}</button>
         </div>
       {{/unless}}
     {{/if}}
   {{/if}}
   <div class="row big_buttons">
     {{#if app_state.currentUser.preferences.new_index}}
-      <div class='col-sm-3 col-xs-6 big_button_holder'>
+      <div class="col-sm-3 col-xs-6 big_button_holder">
         {{#if model.external_device}}
-          <a href="#" {{action 'external_device'}} class="btn simple_board_icon btn-default">
+          <a
+            href="#"
+            {{action "external_device"}}
+            class="btn simple_board_icon btn-default"
+          >
             {{#if model.external_device.size}}
-              <span style='position: absolute; top: 10px; right: 10px; width: 50px; height: 50px; border-radius: 50px; border: 2px solid #ccc; background: rgba(255, 255, 255, 0.7); color: #777; padding-top: 5px; z-index: 2;'>
+              <span
+                style="position: absolute; top: 10px; right: 10px; width: 50px; height: 50px; border-radius: 50px; border: 2px solid #ccc; background: rgba(255, 255, 255, 0.7); color: #777; padding-top: 5px; z-index: 2;"
+              >
                 {{model.external_device.size}}
               </span>
             {{/if}}
             {{#if model.device_image.device_url}}
               {{#if model.device_image.vocab_url}}
-                <img src={{model.device_image.device_url}} onerror="button_broken_image(this);" style='position: absolute; top: 0px; left: 0px; width: 50%;'/>
-                <img src={{model.device_image.vocab_url}} onerror="button_broken_image(this);" style='position: relative;'/>
+                <img
+                  src={{model.device_image.device_url}}
+                  onerror="button_broken_image(this);"
+                  style="position: absolute; top: 0px; left: 0px; width: 50%;"
+                />
+                <img
+                  src={{model.device_image.vocab_url}}
+                  onerror="button_broken_image(this);"
+                  style="position: relative;"
+                />
               {{else}}
-                <img src={{model.device_image.device_url}} onerror="button_broken_image(this);"/>
+                <img
+                  src={{model.device_image.device_url}}
+                  onerror="button_broken_image(this);"
+                />
               {{/if}}
             {{else if model.device_image.vocab_url}}
-              <img src={{model.device_image.vocab_url}} onerror="button_broken_image(this);"/>
+              <img
+                src={{model.device_image.vocab_url}}
+                onerror="button_broken_image(this);"
+              />
             {{else}}
-              <img src="/images/modeling_ideas.svg" onerror="button_broken_image(this);"/>
+              <img
+                src="/images/modeling_ideas.svg"
+                onerror="button_broken_image(this);"
+              />
             {{/if}}
-            <div class='name' style='font-size: 17px; line-height: 18px;'>
+            <div class="name" style="font-size: 17px; line-height: 18px;">
               <div>
                 {{#if model.external_device.device_name}}
                   {{model.external_device.device_name}}
                 {{else}}
-                  {{t "External AAC" key='external_aac'}}
+                  {{t "External AAC" key="external_aac"}}
                 {{/if}}
               </div>
               {{#if model.external_device.vocab_name}}
                 <div>{{model.external_device.vocab_name}}</div>
               {{/if}}
               {{#if model.external_device.size}}
-                <div style='font-size: 14px; font-style: italic;'>{{t "avg size:" key='average_size_colon'}} {{model.external_device.size}}</div>
+                <div style="font-size: 14px; font-style: italic;">{{t
+                    "avg size:"
+                    key="average_size_colon"
+                  }}
+                  {{model.external_device.size}}</div>
               {{/if}}
             </div>
           </a>
         {{else if model.preferences.sync_starred_boards}}
-          <div style='position: absolute; z-index: 2; margin: 6px 12px;'><span class='glyphicon glyphicon-home'></span> {{t "Home Board:" key='home_board_colon'}}</div>
-          <a href="#" {{action 'load_starred'}} class="btn simple_board_icon btn-default">
-            <img src="/images/star.svg" onerror="button_broken_image(this);"/>
-            <div class='name' style='font-size: 17px; line-height: 18px;'>
+          <div style="position: absolute; z-index: 2; margin: 6px 12px;"><span
+              class="glyphicon glyphicon-home"
+            ></span>
+            {{t "Home Board:" key="home_board_colon"}}</div>
+          <a
+            href="#"
+            {{action "load_starred"}}
+            class="btn simple_board_icon btn-default"
+          >
+            <img src="/images/star.svg" onerror="button_broken_image(this);" />
+            <div class="name" style="font-size: 17px; line-height: 18px;">
               <div>
-                {{t "Liked Boards" key='liked_boards'}}
+                {{t "Liked Boards" key="liked_boards"}}
               </div>
               {{#if model.preferences.home_board.key}}
-                <div style='font-size: 12px;'>{{t "including<br/>%{bn}" bn=model.preferences.home_board.key key='including_board_name'}}</div>
+                <div style="font-size: 12px;">{{t
+                    "including<br/>%{bn}"
+                    bn=model.preferences.home_board.key
+                    key="including_board_name"
+                  }}</div>
               {{/if}}
             </div>
           </a>
         {{else if model.preferences.home_board.key}}
-          <div style='position: absolute; z-index: 2; margin: 6px 12px;'><span class='glyphicon glyphicon-home'></span> {{t "Home Board:" key='home_board_colon'}}</div>
+          <div style="position: absolute; z-index: 2; margin: 6px 12px;"><span
+              class="glyphicon glyphicon-home"
+            ></span>
+            {{t "Home Board:" key="home_board_colon"}}</div>
           {{board-icon board=home_board_pref localized=true}}
         {{else}}
           <!-- TODO: if supervisor, maybe show external-device modal insead of home search (maybe with link to search) -->
-          {{#link-to 'home-boards' class='btn big_button btn-default'}}
-            <span class='glyphicon glyphicon-home'></span>
-            {{t "No Home<br/>Board Set" key='no_home_board_set'}}
+          {{#link-to "home-boards" class="btn big_button btn-default"}}
+            <span class="glyphicon glyphicon-home"></span>
+            {{t "No Home<br/>Board Set" key="no_home_board_set"}}
           {{/link-to}}
         {{/if}}
       </div>
-      <div class='col-sm-3 col-xs-6 big_button_holder'>
-        <button class='btn big_button btn-default secondary_button' {{action 'stats'}}>
-          <img src={{path 'images/bar_chart.svg'}} style='opacity: 0.9; filter: grayscale(60%);'/>
-          {{t "Reports" key='reports'}}
+      <div class="col-sm-3 col-xs-6 big_button_holder">
+        <button
+          class="btn big_button btn-default secondary_button"
+          {{action "stats"}}
+        >
+          <img
+            src={{path "images/bar_chart.svg"}}
+            style="opacity: 0.9; filter: grayscale(60%);"
+          />
+          {{t "Reports" key="reports"}}
         </button>
       </div>
-      <div class='col-sm-3 col-xs-6 big_button_holder'>
-        {{#link-to 'user.goals' model.user_name class='btn big_button btn-default alternate_button'}}
-          <span class='glyphicon glyphicon-flag'></span>
-          {{t "Goals" key='goals'}}
+      <div class="col-sm-3 col-xs-6 big_button_holder">
+        {{#link-to
+          "user.goals"
+          model.user_name
+          class="btn big_button btn-default alternate_button"
+        }}
+          <span class="glyphicon glyphicon-flag"></span>
+          {{t "Goals" key="goals"}}
         {{/link-to}}
       </div>
-      <div class='col-sm-3 col-xs-6 big_button_holder'>
-        <button class='btn big_button btn-default lesser_button' {{action "supervision_settings"}}>
-          <span class='glyphicon glyphicon-user'></span>
+      <div class="col-sm-3 col-xs-6 big_button_holder">
+        <button
+          class="btn big_button btn-default lesser_button"
+          {{action "supervision_settings"}}
+        >
+          <span class="glyphicon glyphicon-user"></span>
           {{#if model.supporter_role}}
-            {{t "Supervision" key='supervision'}}
-            <div style='font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{{model.supervisee_names}}</div>
+            {{t "Supervision" key="supervision"}}
+            <div
+              style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            >{{model.supervisee_names}}</div>
           {{else}}
-            {{t "Supervisors" key='supervisors'}}
-            <div style='font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>{{model.supervisor_names}}</div>
+            {{t "Supervisors" key="supervisors"}}
+            <div
+              style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+            >{{model.supervisor_names}}</div>
           {{/if}}
         </button>
       </div>
       {{#if model.permissions.supervise}}
-        <div class='col-sm-3 col-xs-6 big_button_holder'>
+        <div class="col-sm-3 col-xs-6 big_button_holder">
           {{#if app_state.feature_flags.profiles}}
-            <button class='btn big_button btn-default' {{action "profile_preview" model}} style='height: 100px; padding-top: 0;'>
-              <div style='font-size: 14px; margin-top: -3px;'>{{t "Latest Communication Profile:" key='latest_profile'}}</div>
+            <button
+              class="btn big_button btn-default"
+              {{action "profile_preview" model}}
+              style="height: 100px; padding-top: 0;"
+            >
+              <div style="font-size: 14px; margin-top: -3px;">{{t
+                  "Latest Communication Profile:"
+                  key="latest_profile"
+                }}</div>
               <div>
                 <div class={{model.profile_class}}>
                   {{#if model.last_profile}}
-                    {{date model.last_profile_date 'tiny_day'}}
+                    {{date model.last_profile_date "tiny_day"}}
                   {{else}}
-                    {{t "None" key='none_upper'}}
+                    {{t "None" key="none_upper"}}
                   {{/if}}
                 </div>
               </div>
-              <div style='font-size: 12px; color: #888; margin-top: -7px;'>
+              <div style="font-size: 12px; color: #888; margin-top: -7px;">
                 {{#if model.profile_due.overdue}}
-                  {{t "overdue" key='overdue'}}
+                  {{t "overdue" key="overdue"}}
                 {{else if model.profile_due.soon}}
-                  {{t "due soon" key='due_soon'}}
+                  {{t "due soon" key="due_soon"}}
                 {{else if model.profile_due.encouraged}}
                   {{t "consider updating soon"}}
                 {{/if}}
@@ -184,25 +299,37 @@
         </div>
         {{#unless model.supporter_role}}
           {{#if model.external_device}}
-            <div class='col-sm-3 col-xs-6 big_button_holder'>
-              <button class='btn big_button btn-default secondary_button' {{action "manual_log"}} style='height: 100px;'>
-                {{t "Manual Log<br/>Session" key='manual_log_session'}}
+            <div class="col-sm-3 col-xs-6 big_button_holder">
+              <button
+                class="btn big_button btn-default secondary_button"
+                {{action "manual_log"}}
+                style="height: 100px;"
+              >
+                {{t "Manual Log<br/>Session" key="manual_log_session"}}
               </button>
             </div>
-            <div class='col-sm-3 col-xs-6 big_button_holder'>
-              <button class='btn big_button btn-default alternate_button' {{action "recordNote" "text"}} style='height: 100px;'>
-                {{t "New Note" key='new_note'}}
+            <div class="col-sm-3 col-xs-6 big_button_holder">
+              <button
+                class="btn big_button btn-default alternate_button"
+                {{action "recordNote" "text"}}
+                style="height: 100px;"
+              >
+                {{t "New Note" key="new_note"}}
               </button>
             </div>
           {{else}}
-            <div class='col-sm-6 col-xs-6'></div>
+            <div class="col-sm-6 col-xs-6"></div>
           {{/if}}
           {{#if model.managing_org}}
             {{#if model.permissions.edit}}
               {{#unless model.permissions.delete}}
                 {{#if external_device_or_no_home}}
-                  <div class='col-sm-3 col-xs-6 big_button_holder'>
-                    <button class='btn big_button btn-default lesser_button' {{action 'external_device'}} style='height: 100px;'>
+                  <div class="col-sm-3 col-xs-6 big_button_holder">
+                    <button
+                      class="btn big_button btn-default lesser_button"
+                      {{action "external_device"}}
+                      style="height: 100px;"
+                    >
                       {{t "Update Device"}}
                     </button>
                   </div>
@@ -213,31 +340,54 @@
         {{/unless}}
 
         {{#unless app_state.currentUser.modeling_only}}
-          <div class='col-sm-3 col-xs-6' style='float: right; text-align: right; margin-top: -5px; margin-bottom: -10px;'>
+          <div
+            class="col-sm-3 col-xs-6"
+            style="float: right; text-align: right; margin-top: -5px; margin-bottom: -10px;"
+          >
             <div class="btn-group">
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='border-width: 3px; background: #eee;'>
-                <img src='https://d18vdu4p71yql0.cloudfront.net/libraries/noun-project/extra_455_g.svg' style='height: 30px;'/>
-                {{t "Extras" key='extras'}} <span class="caret"></span>
+              <button
+                type="button"
+                class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                style="border-width: 3px; background: #eee;"
+              >
+                <img
+                  src="https://d18vdu4p71yql0.cloudfront.net/libraries/noun-project/extra_455_g.svg"
+                  style="height: 30px;"
+                />
+                {{t "Extras" key="extras"}}
+                <span class="caret"></span>
               </button>
-              <ul class="dropdown-menu" style='right: 0; left: auto;'>
+              <ul class="dropdown-menu" style="right: 0; left: auto;">
                 <li><a href="#" {{action "recordNote" "text"}}>New Note</a></li>
                 <li><a href="#" {{action "quick_assessment"}}>Quick Assessment</a></li>
                 <li><a href="#" {{action "run_eval"}}>Run Evaluation</a></li>
                 {{#if model.preferences.remote_modeling}}
                   {{#unless model.supporter_role}}
-                    <li><a href="#" {{action 'remote_model'}}>{{t "Remote Modeling" key='remote_modeling'}}</a></li>
+                    <li><a href="#" {{action "remote_model"}}>{{t
+                          "Remote Modeling"
+                          key="remote_modeling"
+                        }}</a></li>
                   {{/unless}}
                 {{/if}}
-                <li><a href="#" {{action 'view_devices'}}>My Devices</a></li>
+                <li><a href="#" {{action "view_devices"}}>My Devices</a></li>
                 {{#if model.subscription.eval_expires}}
-                  <li><a href="#" {{action 'eval_settings'}}>Eval Status</a></li>
+                  <li><a href="#" {{action "eval_settings"}}>Eval Status</a></li>
                 {{/if}}
                 {{#if model.permissions.edit}}
                   <!-- allow supervisors to run setup for a supervisee -->
-                  <li><a href="#" {{action 'setup'}}>{{t "Getting Started Wizard" key='getting_started_wizard'}}</a></li>
+                  <li><a href="#" {{action "setup"}}>{{t
+                        "Getting Started Wizard"
+                        key="getting_started_wizard"
+                      }}</a></li>
                 {{/if}}
                 {{#if model.permissions.support_actions}}
-                  <li><a href="#" {{action 'masquerade'}}>{{t "Masquerade as User" key='masquerade_as_user'}}</a></li>
+                  <li><a href="#" {{action "masquerade"}}>{{t
+                        "Masquerade as User"
+                        key="masquerade_as_user"
+                      }}</a></li>
                 {{/if}}
               </ul>
             </div>
@@ -248,536 +398,854 @@
       <div class="col-sm-3 col-xs-6">
         <div class="panel panel-default summary smaller">
           <div class="panel-heading">
-            {{t "Current home board" key='current_home_board_cap'}}
+            {{t "Current home board" key="current_home_board_cap"}}
           </div>
           <div class="panel-body">
-              {{#if model.preferences.home_board.key}}
-                {{#link-to 'board' model.preferences.home_board.key}}{{model.preferences.home_board.key}}{{/link-to}}
-              {{else}}
-                {{t "None" key='none_upper'}}
-              {{/if}}
+            {{#if model.preferences.home_board.key}}
+              {{#link-to
+                "board" model.preferences.home_board.key
+              }}{{model.preferences.home_board.key}}{{/link-to}}
+            {{else}}
+              {{t "None" key="none_upper"}}
+            {{/if}}
           </div>
         </div>
       </div>
       <div class="col-sm-3 col-xs-6">
         <div class="panel panel-default summary smaller">
           <div class="panel-heading">
-            {{t "Current board set" key='current_home_board_set'}}
+            {{t "Current board set" key="current_home_board_set"}}
           </div>
           <div class="panel-body">
-            {{t "board" key='n_boards' count=model.stats.board_set_ids}}
+            {{t "board" key="n_boards" count=model.stats.board_set_ids}}
           </div>
         </div>
       </div>
       <div class="col-sm-3 col-xs-6">
         <div class="panel panel-default summary smaller">
           <div class="panel-heading">
-            {{t "Liked Boards" key='starred_boards'}}
+            {{t "Liked Boards" key="starred_boards"}}
           </div>
           <div class="panel-body">
-            {{t "board" key='n_boards' count=model.stats.starred_boards}}
+            {{t "board" key="n_boards" count=model.stats.starred_boards}}
           </div>
         </div>
       </div>
       <div class="col-sm-3 col-xs-6">
         <div class="panel panel-default summary smaller">
           <div class="panel-heading">
-            {{t "Status" key='status'}}
+            {{t "Status" key="status"}}
           </div>
           <div class="panel-body">
             {{#if model.public}}
-              {{t "public" key='public_lower'}}
+              {{t "public" key="public_lower"}}
             {{else}}
-              {{t "private" key='private_lower'}}
+              {{t "private" key="private_lower"}}
             {{/if}}
           </div>
         </div>
       </div>
       {{#if model.permissions.supervise}}
-          <div class="col-sm-3 col-xs-6">
-            <button style='width: 100%; height: 38px;' class='btn btn-small btn-default' {{action "recordNote" "text"}}>{{t "New Note" key='text_note'}}</button>
-            <button style='width: 100%; height: 38px; margin-top: 5px;' class='btn btn-small btn-default' {{action "quick_assessment"}}>{{t "Quick Assessment" key='quick_assessment'}}</button>
+        <div class="col-sm-3 col-xs-6">
+          <button
+            style="width: 100%; height: 38px;"
+            class="btn btn-small btn-default"
+            {{action "recordNote" "text"}}
+          >{{t "New Note" key="text_note"}}</button>
+          <button
+            style="width: 100%; height: 38px; margin-top: 5px;"
+            class="btn btn-small btn-default"
+            {{action "quick_assessment"}}
+          >{{t "Quick Assessment" key="quick_assessment"}}</button>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <div class="panel panel-default summary smaller">
+            <div class="panel-heading">
+              {{t "My device" key="my_device"}}
+            </div>
+            <div class="panel-body">
+              {{#if model.devices}}
+                {{model.current_device_name}}
+                <div class="sub_link">
+                  {{#if model.multiple_devices}}
+                    <a href="#" {{action "view_devices"}}>{{t
+                        "see all %{tally} devices"
+                        tally=model.device_count
+                        key="see_all_devices"
+                      }}</a>
+                  {{/if}}
+                  &nbsp;
+                </div>
+              {{else}}
+                {{t "none linked" key="none_linked"}}
+              {{/if}}
+            </div>
           </div>
-          <div class="col-sm-3 col-xs-6">
-            <div class="panel panel-default summary smaller">
-              <div class="panel-heading">
-                {{t "My device" key='my_device'}}
-              </div>
-              <div class="panel-body">
-                {{#if model.devices}}
-                  {{model.current_device_name}}
-                  <div class="sub_link">
-                    {{#if model.multiple_devices}}
-                        <a href="#" {{action 'view_devices'}}>{{t "see all %{tally} devices" tally=model.device_count key='see_all_devices'}}</a>
-                    {{/if}}
-                    &nbsp;
-                  </div>
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          <div class="panel panel-default summary smaller">
+            <div class="panel-heading">
+              {{t "My supervisors" key="linked_supervisors"}}
+            </div>
+            <div class="panel-body">
+              <span {{action "supervision_settings"}}>
+                {{#if model.supervisors_or_managing_org}}
+                  <span
+                    style="cursor: pointer;"
+                  >{{model.supervisor_names}}</span>
                 {{else}}
-                  {{t "none linked" key='none_linked'}}
+                  {{t "none linked" key="none_linked"}}
                 {{/if}}
+              </span>
+              <div class="sub_link">
+                {{#if model.permissions.manage_supervision}}
+                  <a href="#" {{action "add_supervisor"}}>{{t
+                      "add supervisor"
+                      key="add_supervisor_lower"
+                    }}</a>
+                {{/if}}
+                &nbsp;
               </div>
             </div>
           </div>
-          <div class="col-sm-3 col-xs-6">
+        </div>
+        <div class="col-sm-3 col-xs-6">
+          {{#if model.supervisees}}
             <div class="panel panel-default summary smaller">
               <div class="panel-heading">
-                {{t "My supervisors" key='linked_supervisors'}}
+                {{t "People I supervise" key="linked_users"}}
               </div>
-              <div class="panel-body">
-                    <span {{action "supervision_settings"}}>
-                      {{#if model.supervisors_or_managing_org}}
-                        <span style="cursor: pointer;">{{model.supervisor_names}}</span>
-                      {{else}}
-                        {{t "none linked" key='none_linked'}}
-                      {{/if}}
-                    </span>
-                    <div class="sub_link">
-                      {{#if model.permissions.manage_supervision}}
-                        <a href="#" {{action 'add_supervisor'}}>{{t "add supervisor" key='add_supervisor_lower'}}</a>
-                      {{/if}}
-                      &nbsp;
-                    </div>
+              <div class="panel-body" {{action "supervision_settings"}}>
+                <span style="cursor: pointer;">{{model.supervisee_names}}</span>
+                <div class="sub_link">&nbsp;</div>
               </div>
             </div>
-          </div>
-          <div class="col-sm-3 col-xs-6">
-            {{#if model.supervisees}}
-              <div class="panel panel-default summary smaller">
-                <div class="panel-heading">
-                  {{t "People I supervise" key='linked_users'}}
-                </div>
-                <div class="panel-body" {{action "supervision_settings"}}>
-                  <span style="cursor: pointer;">{{model.supervisee_names}}</span>
-                  <div class="sub_link">&nbsp;</div>
-                </div>
-              </div>
-            {{/if}}
-          </div>
+          {{/if}}
+        </div>
       {{/if}}
       {{#if model.permissions.edit}}
-        <div class='col-xs-12' style='margin-top: 10px; margin-bottom: 15px;'>
-          <a href="#" {{action 'setup'}} class='btn btn-default'>{{t "Launch the Getting Started Wizard Again" key='launch_setup'}}</a>
+        <div class="col-xs-12" style="margin-top: 10px; margin-bottom: 15px;">
+          <a href="#" {{action "setup"}} class="btn btn-default">{{t
+              "Launch the Getting Started Wizard Again"
+              key="launch_setup"
+            }}</a>
         </div>
       {{/if}}
     {{/if}}
   </div>
   {{#unless app_state.currentUser.preferences.new_index}}
-  <div class="row">
-    <div class="col-sm-3 col-xs-6">
-      {{#if model.permissions.edit}}
-        <strong>{{t "Recent Sessions:" key='log_colon'}}</strong><br/>
-        <div style="margin-left: 20px;">
-          {{#if model.logs.loading}}
-            <p>
-              {{t "Loading..." key='loading'}}
-            </p>
-          {{else if model.logs.error}}
-            <p>
-              {{t "Failed to load" key='failed to load'}}
-            </p>
-          {{else if model.logs}}
-            {{#each model.logs as |log|}}
-              <p>
-                <span title={{date log.started_at}}>
-                  {{date_ago log.started_at}}
-                </span>
-                {{#link-to 'user.log' model.user_name log.id}}
-                  {{#if log.assessment}}
-                    {{t "assessment" key='assessment'}}
-                  {{else if log.note}}
-                    {{t "note" key='note_lower'}}
-                  {{else}}
-                    {{t "button" count=log.button_count key='button_count'}}
-                  {{/if}}
-                {{/link-to}}
-                <br/>
-                <span style="color: #888; font-size: 10px; white-space: nowrap; overflow: hidden; display: block;">{{log.summary}}</span>
-              </p>
-            {{/each}}
-          {{else}}
-            <p>
-              {{t "No sessions currently available" key='no_sessions_found'}}
-            </p>
-          {{/if}}
-        </div>
-      {{/if}}
-    </div>
-    <div class="col-sm-3 col-sx-6">
-      {{#if model.permissions.edit}}
-        <strong>{{t "Current Goals:" key='current_goals'}}</strong><br/>
-        {{#if model.goals.loading}}
-          <p>{{t "Loading..." key='loading'}}</p>
-        {{else if model.goals.error}}
-          <p>{{t "Failed to load" key='failed_to_load'}}</p>
-        {{else if model.goals}}
+    <div class="row">
+      <div class="col-sm-3 col-xs-6">
+        {{#if model.permissions.edit}}
+          <strong>{{t "Recent Sessions:" key="log_colon"}}</strong><br />
           <div style="margin-left: 20px;">
-            {{#each model.goals as |goal|}}
+            {{#if model.logs.loading}}
               <p>
-                <div style='white-space: nowrap; overflow: hidden;'>
-                  {{#link-to 'user.goal' model.user_name goal.id}}
-                    {{goal.summary}}
-                  {{/link-to}}
-                </div>
-                <span style='color: #888; font-size: 10px; white-space: nowrap; overflow: hidden; display: block;' >
-                  {{goal.description}}&nbsp;
-                </span>
+                {{t "Loading..." key="loading"}}
               </p>
-            {{/each}}
-            {{#if model.permissions.supervise}}
-              <div style='margin-top: 5px;'>
-                {{#link-to 'user.goals' model.user_name}}{{t "see all user goals" key='see_all_user_goals'}}{{/link-to}}
-              </div>
+            {{else if model.logs.error}}
+              <p>
+                {{t "Failed to load" key="failed to load"}}
+              </p>
+            {{else if model.logs}}
+              {{#each model.logs as |log|}}
+                <p>
+                  <span title={{date log.started_at}}>
+                    {{date_ago log.started_at}}
+                  </span>
+                  {{#link-to "user.log" model.user_name log.id}}
+                    {{#if log.assessment}}
+                      {{t "assessment" key="assessment"}}
+                    {{else if log.note}}
+                      {{t "note" key="note_lower"}}
+                    {{else}}
+                      {{t "button" count=log.button_count key="button_count"}}
+                    {{/if}}
+                  {{/link-to}}
+                  <br />
+                  <span
+                    style="color: #888; font-size: 10px; white-space: nowrap; overflow: hidden; display: block;"
+                  >{{log.summary}}</span>
+                </p>
+              {{/each}}
+            {{else}}
+              <p>
+                {{t "No sessions currently available" key="no_sessions_found"}}
+              </p>
             {{/if}}
           </div>
-        {{else}}
-          <p>{{t "No goals currently available" key='no_goals_found'}}</p>
         {{/if}}
-      {{/if}}
-    </div>
-    <div class="col-sm-6">
-      {{#if model.badges}}
-        <strong>{{t "Badges:" key='badges_colon'}}</strong>
-        <div style="margin-left: 20px;">
-          {{#if model.badges.loading}}
-            <p>{{t "Loading..." key='loading'}}</p>
-          {{else if model.badges.error}}
-            <p>{{t "Failed to load" key='failed_to_load'}}</p>
-          {{else if model.badges}}
-            <div>
-            {{#each model.badges as |badge|}}
-              {{partial 'badge-in-list'}}
-            {{/each}}
-            </div>
-            <div style='clear: left;'></div>
-            {{#if model.permissions.supervise}}
-              <div style='margin-top: 5px;'>
-                {{#link-to 'user.badges' model.user_name}}{{t "see all user badges" key='see_all_user_badges'}}{{/link-to}}
-              </div>
-            {{/if}}
-          {{else}}
-            <p>{{t "No badges currently available" key='no_badges_found'}}</p>
-          {{/if}}
-        </div>
-      {{/if}}
-    </div>
-  </div>
-  {{/unless}}
-    <div class="row">
-      <div class="col-sm-12">
-        {{#if model.topics.length}}
-          <h4>{{t "Current Curriculum Topics:" key='current_curriculum_topics'}}</h4>
-          <ul class='list-group' style='max-width: 350px;'>
-            {{#each model.topics as |topic|}}
-              {{#if topic.url}}
-                <a class='list-group-item' href={{topic.url}} target='_blank'>{{topic.title}}</a>
-              {{else}}
-                <li class='list-group-item'>{{topic.title}}</li>
-              {{/if}}
-            {{/each}}
-          </ul>
-        {{/if}}
-        <h4>
-          {{#if model.external_device}}
-            {{t "%app_name% Boards in this Account:" key='boards_in_this_account'}}
-          {{else}}
-            {{t "Available Boards:" key='available_boards_colon'}}
-          {{/if}}
-        </h4>
-        <ul class="nav nav-pills" style="margin-top: -5px; margin-bottom: 5px; margin-right: -20px;">
-          {{#if model.permissions.edit}}
-            <li role="presentation" class={{if mine_selected 'active'}}><a href="#" {{action 'set_selected' 'mine'}}>{{t "Mine" key='mine'}}</a></li>
-          {{else if model.permissions.model}}
-            <li role="presentation" class={{if mine_selected 'active'}}><a href="#" {{action 'set_selected' 'mine'}}>{{t "Mine" key='mine'}}</a></li>
-          {{/if}}
-          {{#unless app_state.currentUser.modeling_only}}
-            <li role="presentation" class={{if public_selected 'active'}}><a href="#" {{action 'set_selected' 'public'}}>{{t "Public" key='public'}}</a></li>
-          {{/unless}}
-          {{#if model.permissions.model}}
-            <li role="presentation" class={{if root_selected 'active'}}><a href="#" {{action 'set_selected' 'root'}}>{{t "Root" key='root'}}</a></li>
-          {{/if}}
-          {{#unless app_state.currentUser.modeling_only}}
-            <li role="presentation" class={{if starred_selected 'active'}}><a href="#" {{action 'set_selected' 'starred'}}>{{t "Liked" key='starred'}}</a></li>
-          {{/unless}}
-          
-          {{#unless app_state.currentUser.modeling_only}}
-            {{#if model.permissions.model}}
-              <li role="presentation" class={{if other_selected 'dropdown active' 'dropdown'}}>
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                  {{ more_label }}
-                  <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  {{#if model.permissions.edit}}
-                    <li><a href="#" {{action 'set_selected' 'shared'}}>{{t "Shared with Me" key='shared_with_me'}}</a></li>
-                  {{/if}}
-                  {{#if model.permissions.model}}
-                    {{#if model.prior_home_boards}}
-                      <li><a href="#" {{action 'set_selected' 'prior_home'}}>{{t "Prior Home Boards" key='prior_home'}}</a></li>
-                    {{/if}}
-                  {{/if}}
-                  {{#if model.permissions.edit}}
-                    <li role="presentation" class={{if private_selected 'active'}}><a href="#" {{action 'set_selected' 'private'}}>{{t "Private" key='private'}}</a></li>
-                  {{/if}}
-                  {{#each model.board_tags as |tag|}}
-                    <li><a href="#" {{action 'set_tag' tag}}>{{tag}}</a></li>
-                  {{/each}}
-                </ul>
-              </li>
-            {{/if}}
-          {{/unless}}
-        </ul>
-        {{#if board_list}}
-          {{#if board_list.loading}}
-            {{t "Loading..." key='loading'}}
-          {{else if board_list.error}}
-            {{t "Failed to load" key='failed_to_load'}}
-          {{else if board_list.results}}
-            {{#if prior_home_selected}}
-              <ul class="list-group" style="max-width: 350px;">
-                {{#each board_list.filtered_results as |board|}}
-                  <li class="list-group-item">
-                    {{#link-to "board" board.board.key}}{{board.board.key}}{{/link-to}}
-                  </li>
-                {{/each}}
-              </ul>
-              {{#unless show_all_boards}}
-                <a href="#" {{action "show_more_boards"}}>{{t "show more" key='show_more'}}</a>
-              {{/unless}}
-            {{else}}
-              {{#if board_list.sub_result}}
-                <div style='margin-bottom: 5px;'><em>{{t "Showing boards copied with %{k}" key='showing_boards_copied_with' k=parent_object.board.key}}</em></div>
-                <a href="#" class='btn btn-default' {{action 'load_children'}} style='margin-bottom: 10px;'><span class='glyphicon glyphicon-arrow-left'></span> {{t "Back to Full List" key='back_to_full_list'}}</a>
-              {{/if}}
-              <form style="margin-bottom: 10px;" {{action 'nothing' on='submit'}}>
-                <div style="width: 250px;">
-                {{input type="text" value=filterString class="form-control" placeholder="Filter Results"}}
+      </div>
+      <div class="col-sm-3 col-sx-6">
+        {{#if model.permissions.edit}}
+          <strong>{{t "Current Goals:" key="current_goals"}}</strong><br />
+          {{#if model.goals.loading}}
+            <p>{{t "Loading..." key="loading"}}</p>
+          {{else if model.goals.error}}
+            <p>{{t "Failed to load" key="failed_to_load"}}</p>
+          {{else if model.goals}}
+            <div style="margin-left: 20px;">
+              {{#each model.goals as |goal|}}
+                <p>
+                  <div style="white-space: nowrap; overflow: hidden;">
+                    {{#link-to "user.goal" model.user_name goal.id}}
+                      {{goal.summary}}
+                    {{/link-to}}
+                  </div>
+                  <span
+                    style="color: #888; font-size: 10px; white-space: nowrap; overflow: hidden; display: block;"
+                  >
+                    {{goal.description}}&nbsp;
+                  </span>
+                </p>
+              {{/each}}
+              {{#if model.permissions.supervise}}
+                <div style="margin-top: 5px;">
+                  {{#link-to "user.goals" model.user_name}}{{t
+                      "see all user goals"
+                      key="see_all_user_goals"
+                    }}{{/link-to}}
                 </div>
-              </form>
-              <div class="row">
-                {{#each filtered_results as |board|}}
-                  {{#if board.board.key}}
-                    {{#unless board.board.removed}}
-                      <div class="col-sm-2 col-xs-3 board_with_action simple_board_holder" rel={{board.hidden}} style={{if board.hidden 'position: absolute; left: -1000px; visibility: hidden;' ''}}>
-                        {{#if board.children}}
-                          {{board-icon board=board noinfo=true action='load_children'}}
-                        {{else}}
-                          {{board-icon board=board.board}}
-                        {{/if}}
-                        {{#if model.permissions.edit}}
-                          {{#if board.board.id}}
-                            <button class="board_action" {{action 'remove_board' board_list.remove_type board.board}}>
-                              <span title={{board_list.remove_label}}><span class={{board_list.remove_icon}}></span></span>
-                            </button>
-                          {{/if}}
-                        {{/if}}
-                      </div>
-                    {{/unless}}
-                  {{else if board.orphan}}
-                    {{#if board.children}}
-                      <div class="col-sm-2 col-xs-3 board_with_action simple_board_holder" rel={{board.hidden}} style={{if board.hidden 'position: absolute; left: -1000px; visibility: hidden;' ''}}>
-                        {{board-icon board=board noinfo=true action='load_children'}}
-                        {{#if model.permissions.edit}}
-                          <button class="board_action" {{action 'remove_board' 'delete_orphans' board}}>
-                            <span title="delete"><span class="glyphicon glyphicon-trash"></span></span>
-                          </button>
-                        {{/if}}
-                      </div>
-                    {{/if}}
-                  {{/if}}
-                {{/each}}
-                {{#unless show_all_boards}}
-                  {{#unless filterString}}
-                    <div class="col-sm-12" style='clear: left;'>
-                      <a href="#" {{action "show_more_boards"}}>{{t "show more" key='show_more'}}</a>
-                    </div>
-                  {{/unless}}
-                {{/unless}}
-              </div>
-            {{/if}}
+              {{/if}}
+            </div>
           {{else}}
-            {{t "None found" key='none_found'}}
+            <p>{{t "No goals currently available" key="no_goals_found"}}</p>
           {{/if}}
         {{/if}}
       </div>
+      <div class="col-sm-6">
+        {{#if model.badges}}
+          <strong>{{t "Badges:" key="badges_colon"}}</strong>
+          <div style="margin-left: 20px;">
+            {{#if model.badges.loading}}
+              <p>{{t "Loading..." key="loading"}}</p>
+            {{else if model.badges.error}}
+              <p>{{t "Failed to load" key="failed_to_load"}}</p>
+            {{else if model.badges}}
+              <div>
+                {{#each model.badges as |badge|}}
+                  {{partial "badge-in-list"}}
+                {{/each}}
+              </div>
+              <div style="clear: left;"></div>
+              {{#if model.permissions.supervise}}
+                <div style="margin-top: 5px;">
+                  {{#link-to "user.badges" model.user_name}}{{t
+                      "see all user badges"
+                      key="see_all_user_badges"
+                    }}{{/link-to}}
+                </div>
+              {{/if}}
+            {{else}}
+              <p>{{t "No badges currently available" key="no_badges_found"}}</p>
+            {{/if}}
+          </div>
+        {{/if}}
+      </div>
     </div>
+  {{/unless}}
+  <div class="row">
+    <div class="col-sm-12">
+      {{#if model.topics.length}}
+        <h4>{{t
+            "Current Curriculum Topics:"
+            key="current_curriculum_topics"
+          }}</h4>
+        <ul class="list-group" style="max-width: 350px;">
+          {{#each model.topics as |topic|}}
+            {{#if topic.url}}
+              <a
+                class="list-group-item"
+                href={{topic.url}}
+                target="_blank"
+              >{{topic.title}}</a>
+            {{else}}
+              <li class="list-group-item">{{topic.title}}</li>
+            {{/if}}
+          {{/each}}
+        </ul>
+      {{/if}}
+      <h4>
+        {{#if model.external_device}}
+          {{t
+            "%app_name% Boards in this Account:"
+            key="boards_in_this_account"
+          }}
+        {{else}}
+          {{t "Available Boards:" key="available_boards_colon"}}
+        {{/if}}
+      </h4>
+      <ul
+        class="nav nav-pills"
+        style="margin-top: -5px; margin-bottom: 5px; margin-right: -20px;"
+      >
+        {{#if model.permissions.edit}}
+          <li role="presentation" class={{if mine_selected "active"}}><a
+              href="#"
+              {{action "set_selected" "mine"}}
+            >{{t "Mine" key="mine"}}</a></li>
+        {{else if model.permissions.model}}
+          <li role="presentation" class={{if mine_selected "active"}}><a
+              href="#"
+              {{action "set_selected" "mine"}}
+            >{{t "Mine" key="mine"}}</a></li>
+        {{/if}}
+        {{#unless app_state.currentUser.modeling_only}}
+          <li role="presentation" class={{if public_selected "active"}}><a
+              href="#"
+              {{action "set_selected" "public"}}
+            >{{t "Public" key="public"}}</a></li>
+        {{/unless}}
+        {{#if model.permissions.model}}
+          <li role="presentation" class={{if root_selected "active"}}><a
+              href="#"
+              {{action "set_selected" "root"}}
+            >{{t "Root" key="root"}}</a></li>
+        {{/if}}
+        {{#unless app_state.currentUser.modeling_only}}
+          <li role="presentation" class={{if starred_selected "active"}}><a
+              href="#"
+              {{action "set_selected" "starred"}}
+            >{{t "Liked" key="starred"}}</a></li>
+        {{/unless}}
+
+        {{#unless app_state.currentUser.modeling_only}}
+          {{#if model.permissions.model}}
+            <li
+              role="presentation"
+              class={{if other_selected "dropdown active" "dropdown"}}
+            >
+              <a
+                class="dropdown-toggle"
+                data-toggle="dropdown"
+                href="#"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {{more_label}}
+                <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                {{#if model.permissions.edit}}
+                  <li><a href="#" {{action "set_selected" "shared"}}>{{t
+                        "Shared with Me"
+                        key="shared_with_me"
+                      }}</a></li>
+                {{/if}}
+                {{#if model.permissions.model}}
+                  {{#if model.prior_home_boards}}
+                    <li><a href="#" {{action "set_selected" "prior_home"}}>{{t
+                          "Prior Home Boards"
+                          key="prior_home"
+                        }}</a></li>
+                  {{/if}}
+                {{/if}}
+                {{#if model.permissions.edit}}
+                  <li
+                    role="presentation"
+                    class={{if private_selected "active"}}
+                  ><a href="#" {{action "set_selected" "private"}}>{{t
+                        "Private"
+                        key="private"
+                      }}</a></li>
+                {{/if}}
+                {{#each model.board_tags as |tag|}}
+                  <li><a href="#" {{action "set_tag" tag}}>{{tag}}</a></li>
+                {{/each}}
+              </ul>
+            </li>
+          {{/if}}
+        {{/unless}}
+      </ul>
+      {{#if board_list}}
+        {{#if board_list.loading}}
+          {{t "Loading..." key="loading"}}
+        {{else if board_list.error}}
+          {{t "Failed to load" key="failed_to_load"}}
+        {{else if board_list.results}}
+          {{#if prior_home_selected}}
+            <ul class="list-group" style="max-width: 350px;">
+              {{#each board_list.filtered_results as |board|}}
+                <li class="list-group-item">
+                  {{#link-to
+                    "board" board.board.key
+                  }}{{board.board.key}}{{/link-to}}
+                </li>
+              {{/each}}
+            </ul>
+            {{#unless show_all_boards}}
+              <a href="#" {{action "show_more_boards"}}>{{t
+                  "show more"
+                  key="show_more"
+                }}</a>
+            {{/unless}}
+          {{else}}
+            {{#if board_list.sub_result}}
+              <div style="margin-bottom: 5px;"><em>{{t
+                    "Showing boards copied with %{k}"
+                    key="showing_boards_copied_with"
+                    k=parent_object.board.key
+                  }}</em></div>
+              <a
+                href="#"
+                class="btn btn-default"
+                {{action "load_children"}}
+                style="margin-bottom: 10px;"
+              ><span class="glyphicon glyphicon-arrow-left"></span>
+                {{t "Back to Full List" key="back_to_full_list"}}</a>
+            {{/if}}
+            <form style="margin-bottom: 10px;" {{action "nothing" on="submit"}}>
+              <div style="width: 250px;">
+                {{input
+                  type="text"
+                  value=filterString
+                  class="form-control"
+                  placeholder="Filter Results"
+                }}
+              </div>
+            </form>
+            <div class="row">
+              {{#each filtered_results as |board|}}
+                {{#if board.board.key}}
+                  {{#unless board.board.removed}}
+                    <div
+                      class="col-sm-2 col-xs-3 board_with_action simple_board_holder"
+                      rel={{board.hidden}}
+                      style={{if
+                        board.hidden
+                        "position: absolute; left: -1000px; visibility: hidden;"
+                        ""
+                      }}
+                    >
+                      {{#if board.children}}
+                        {{board-icon
+                          board=board
+                          noinfo=true
+                          action="load_children"
+                        }}
+                      {{else}}
+                        {{board-icon board=board.board}}
+                      {{/if}}
+                      {{#if model.permissions.edit}}
+                        {{#if board.board.id}}
+                          <button
+                            class="board_action"
+                            {{action
+                              "remove_board"
+                              board_list.remove_type
+                              board.board
+                            }}
+                          >
+                            <span title={{board_list.remove_label}}><span
+                                class={{board_list.remove_icon}}
+                              ></span></span>
+                          </button>
+                        {{/if}}
+                      {{/if}}
+                    </div>
+                  {{/unless}}
+                {{else if board.orphan}}
+                  {{#if board.children}}
+                    <div
+                      class="col-sm-2 col-xs-3 board_with_action simple_board_holder"
+                      rel={{board.hidden}}
+                      style={{if
+                        board.hidden
+                        "position: absolute; left: -1000px; visibility: hidden;"
+                        ""
+                      }}
+                    >
+                      {{board-icon
+                        board=board
+                        noinfo=true
+                        action="load_children"
+                      }}
+                      {{#if model.permissions.edit}}
+                        <button
+                          class="board_action"
+                          {{action "remove_board" "delete_orphans" board}}
+                        >
+                          <span title="delete"><span
+                              class="glyphicon glyphicon-trash"
+                            ></span></span>
+                        </button>
+                      {{/if}}
+                    </div>
+                  {{/if}}
+                {{/if}}
+              {{/each}}
+              {{#unless show_all_boards}}
+                {{#unless filterString}}
+                  <div class="col-sm-12" style="clear: left;">
+                    <a href="#" {{action "show_more_boards"}}>{{t
+                        "show more"
+                        key="show_more"
+                      }}</a>
+                  </div>
+                {{/unless}}
+              {{/unless}}
+            </div>
+          {{/if}}
+        {{else}}
+          {{t "None found" key="none_found"}}
+        {{/if}}
+      {{/if}}
+    </div>
+  </div>
   {{#if model.permissions.support_actions}}
     <div class="row" style="margin-top: 30px;">
       <div class="col-sm-12">
-        <h4>{{t "Support Actions" key='support_actions'}}</h4>
+        <h4>{{t "Support Actions" key="support_actions"}}</h4>
         {{#if password}}
           <div>
             {{#unless password.pw}}
-              {{t "Are you sure you want to reset this user's password? They will receive an email notifying them of the reset." key='confirm_reset_password'}}<br/>
-              <button class='btn btn-default' {{action 'reset_password' true}}>{{t "Reset Password" key='reset_password'}}</button>
-              <button class='btn btn-default' {{action 'reset_password' false}}>{{t "Cancel" key='cancel'}}</button>
+              {{t
+                "Are you sure you want to reset this user's password? They will receive an email notifying them of the reset."
+                key="confirm_reset_password"
+              }}<br />
+              <button
+                class="btn btn-default"
+                {{action "reset_password" true}}
+              >{{t "Reset Password" key="reset_password"}}</button>
+              <button
+                class="btn btn-default"
+                {{action "reset_password" false}}
+              >{{t "Cancel" key="cancel"}}</button>
             {{/unless}}
             {{#if password.loading}}
-              {{t "Setting password to <strong>%{pw}</strong>..." key='setting_password_to' pw=password.pw}}
+              {{t
+                "Setting password to <strong>%{pw}</strong>..."
+                key="setting_password_to"
+                pw=password.pw
+              }}
             {{else if password.error}}
-              {{t "Password reset failed" key='password_reset_failed'}}
+              {{t "Password reset failed" key="password_reset_failed"}}
             {{else if password.pw}}
-              {{t "Password reset to <strong>%{pw}</strong>" key='password_was_reset' pw=password.pw}}
+              {{t
+                "Password reset to <strong>%{pw}</strong>"
+                key="password_was_reset"
+                pw=password.pw
+              }}
             {{/if}}
           </div>
         {{else if new_user_name}}
           <div>
-            {{t "Are you sure you want to change the user's user name? They will receive an email notifying them of the change." key='confirm_change'}}<br/>
+            {{t
+              "Are you sure you want to change the user's user name? They will receive an email notifying them of the change."
+              key="confirm_change"
+            }}<br />
             <form class="form-horizontal" {{action "nothing"}}>
               <div class="form-group">
-                <label for="old_key" class="col-sm-3 control-label">{{t "Current User Name" key='current_user_name'}}</label>
+                <label for="old_key" class="col-sm-3 control-label">{{t
+                    "Current User Name"
+                    key="current_user_name"
+                  }}</label>
                 <div class="col-sm-5">
-                  {{input type='text' class='form-control' id='old_key' value=new_user_name.old_value placeholder="current user name"}}
+                  {{input
+                    type="text"
+                    class="form-control"
+                    id="old_key"
+                    value=new_user_name.old_value
+                    placeholder="current user name"
+                  }}
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="new_key" class="col-sm-3 control-label">{{t "New User Name" key='new_user_name'}}</label>
+                <label for="new_key" class="col-sm-3 control-label">{{t
+                    "New User Name"
+                    key="new_user_name"
+                  }}</label>
                 <div class="col-sm-5">
-                  {{input type='text' class='form-control' id='new_key' value=new_user_name.value placeholder="new key"}}
+                  {{input
+                    type="text"
+                    class="form-control"
+                    id="new_key"
+                    value=new_user_name.value
+                    placeholder="new key"
+                  }}
                 </div>
               </div>
 
               <div class="form-group">
-                <div class='col-sm-5 col-sm-offset-3'>
-                  <button class='btn btn-default' {{action 'rename_user' true}}>
+                <div class="col-sm-5 col-sm-offset-3">
+                  <button class="btn btn-default" {{action "rename_user" true}}>
                     {{#if new_user_name.renaming}}
-                      {{t "Changing User Name" key='changing_user_name'}}
+                      {{t "Changing User Name" key="changing_user_name"}}
                     {{else if new_user_name.error}}
-                      {{t "Error Changing User Name" key='error_changing_user_name'}}
+                      {{t
+                        "Error Changing User Name"
+                        key="error_changing_user_name"
+                      }}
                     {{else}}
-                      {{t "Change User Name" key='change_user_name'}}
+                      {{t "Change User Name" key="change_user_name"}}
                     {{/if}}
                   </button>
-                  <button class='btn btn-default' {{action 'rename_user' false}}>{{t "Cancel" key='cancel'}}</button>
+                  <button
+                    class="btn btn-default"
+                    {{action "rename_user" false}}
+                  >{{t "Cancel" key="cancel"}}</button>
                 </div>
               </div>
             </form>
           </div>
         {{else}}
-          <a href="#" {{action 'reset_password'}} class="btn btn-default">{{t "Reset Password" key='reset_password'}}</a>
-          <a href="#" {{action 'rename_user'}} class="btn btn-default">{{t "Change User Name" key='change_user_name'}}</a>
-          {{#link-to 'user.history' model.user_name class='btn btn-default'}}{{t "Edit History" key='edit_history'}}{{/link-to}}
+          <a href="#" {{action "reset_password"}} class="btn btn-default">{{t
+              "Reset Password"
+              key="reset_password"
+            }}</a>
+          <a href="#" {{action "rename_user"}} class="btn btn-default">{{t
+              "Change User Name"
+              key="change_user_name"
+            }}</a>
+          {{#link-to "user.history" model.user_name class="btn btn-default"}}{{t
+              "Edit History"
+              key="edit_history"
+            }}{{/link-to}}
         {{/if}}
         {{#if model.permissions.admin_support_actions}}
-          <h5 style="margin-top: 20px;">{{t "Subscription:" key='subscription_colon'}}</h5>
+          <h5 style="margin-top: 20px;">{{t
+              "Subscription:"
+              key="subscription_colon"
+            }}</h5>
           <div class="well" style="max-width: 500px;">
-            <span class="glyphicon glyphicon-usd" style="font-size: 50px; float: left;"></span>
+            <span
+              class="glyphicon glyphicon-usd"
+              style="font-size: 50px; float: left;"
+            ></span>
             <div style="margin-bottom: 5px; margin-top: -5px;">
-              {{model.id}} - {{model.email}} - {{subscription.subscription_plan_description}} - {{model.subscription.billing_state}}
+              {{model.id}}
+              -
+              {{model.email}}
+              -
+              {{subscription.subscription_plan_description}}
+              -
+              {{model.subscription.billing_state}}
               {{#if model.subscription.expires}}
-                {{t " -- expires" key='dash_expires'}}
-                {{date model.subscription.expires 'day'}}
+                {{t " -- expires" key="dash_expires"}}
+                {{date model.subscription.expires "day"}}
               {{/if}}
               {{#if model.purchase_duration}}
-                <br/>{{t "premium user for %{n} years" n=model.purchase_duration key='paid_for_n_years'}}
+                <br />{{t
+                  "premium user for %{n} years"
+                  n=model.purchase_duration
+                  key="paid_for_n_years"
+                }}
               {{/if}}
               <div>
                 {{#if model.premium_voices}}
-                  {{t "premium voice" count=model.premium_voices.allowed key='premium_voices_count'}}{{t ", %{cnt} used" key='comma_premium_voices_used' cnt=model.premium_voices.claimed.length}}
+                  {{t
+                    "premium voice"
+                    count=model.premium_voices.allowed
+                    key="premium_voices_count"
+                  }}{{t
+                    ", %{cnt} used"
+                    key="comma_premium_voices_used"
+                    cnt=model.premium_voices.claimed.length
+                  }}
                 {{/if}}
                 {{#if model.subscription.extras_enabled}}
-                  {{t " + premium symbols enabled" key='plus_extras_enabled'}}
+                  {{t " + premium symbols enabled" key="plus_extras_enabled"}}
                 {{/if}}
                 {{#if model.subscription.purchased_supporters}}
-                  {{t " + " key='plus_p'}}
-                  {{model.subscription.available_supporters}} / {{model.subscription.purchased_supporters}}
-                  {{t "supervisor credits available" key='supervisor_credits_available'}}
+                  {{t " + " key="plus_p"}}
+                  {{model.subscription.available_supporters}}
+                  /
+                  {{model.subscription.purchased_supporters}}
+                  {{t
+                    "supervisor credits available"
+                    key="supervisor_credits_available"
+                  }}
                 {{/if}}
               </div>
             </div>
             {{#if subscription_settings.type}}
               <div>
                 {{#if subscription_settings.loading}}
-                  {{t "Updating subscription..." key='updating_subscription'}}
+                  {{t "Updating subscription..." key="updating_subscription"}}
                 {{else if subscription_settings.error}}
                   {{subscription_settings.error}}
                 {{else}}
-                  {{t "Are you sure you want to set this user as a %{type}?" type=subscription_settings.type key='confirm_subscription_set'}}<br/>
-                  <button class='btn btn-default' {{action 'set_subscription' 'confirm'}}>{{t "Update Subscription" key='update_subscription'}}</button>
-                  <button class='btn btn-default' {{action 'set_subscription' 'cancel'}}>{{t "Cancel" key='cancel'}}</button>
+                  {{t
+                    "Are you sure you want to set this user as a %{type}?"
+                    type=subscription_settings.type
+                    key="confirm_subscription_set"
+                  }}<br />
+                  <button
+                    class="btn btn-default"
+                    {{action "set_subscription" "confirm"}}
+                  >{{t
+                      "Update Subscription"
+                      key="update_subscription"
+                    }}</button>
+                  <button
+                    class="btn btn-default"
+                    {{action "set_subscription" "cancel"}}
+                  >{{t "Cancel" key="cancel"}}</button>
                 {{/if}}
               </div>
             {{else}}
               <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{t "Modify Subscription" key='modify_subscription'}} <span class="caret"></span>
+                <button
+                  type="button"
+                  class="btn btn-default dropdown-toggle"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {{t "Modify Subscription" key="modify_subscription"}}
+                  <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                  <li><a href="#" {{action 'set_subscription' 'eval'}}>{{t "Set as Eval Account" key='set_as_eval'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'never_expires'}}>{{t "Set as Free Forever" key='set_as_free_forever'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'manual_modeler'}}>{{t "Set as Free Modeler" key='set_as_free_modeler'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'manual_supporter'}}>{{t "Set as Free Supporter" key='set_as_free_supporter'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'communicator_trial'}}>{{t "Set as Free Trial Communicator" key='set_as_free_trial_communicator'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'add_1'}}>{{t "Add 1 Month" key='add_one_month'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'enable_extras'}}>{{t "Enable Premium Symbols" key='enable_premium_symbols'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'supporter_credit'}}>{{t "Add 1 Supporter Credit" key='add_supporter_credit'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'check_remote'}}>{{t "Re-Check Purchase Status" key='recheck_purchase_status'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'restore'}}>{{t "Restore Disabled Purchase" key='restore_disabled_purchase'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'add_voice'}}>{{t "Add Premium Voice" key='add_premium_voice'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'add_5_years'}}>{{t "Add 5 Years" key='add_five_years'}}</a></li>
-                  <li><a href="#" {{action 'set_subscription' 'force_logout'}}>{{t "Force Logout" key='force_logout'}}</a></li>
+                  <li><a href="#" {{action "set_subscription" "eval"}}>{{t
+                        "Set as Eval Account"
+                        key="set_as_eval"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "never_expires"}}
+                    >{{t
+                        "Set as Free Forever"
+                        key="set_as_free_forever"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "manual_modeler"}}
+                    >{{t
+                        "Set as Free Modeler"
+                        key="set_as_free_modeler"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "manual_supporter"}}
+                    >{{t
+                        "Set as Free Supporter"
+                        key="set_as_free_supporter"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "communicator_trial"}}
+                    >{{t
+                        "Set as Free Trial Communicator"
+                        key="set_as_free_trial_communicator"
+                      }}</a></li>
+                  <li><a href="#" {{action "set_subscription" "add_1"}}>{{t
+                        "Add 1 Month"
+                        key="add_one_month"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "enable_extras"}}
+                    >{{t
+                        "Enable Premium Symbols"
+                        key="enable_premium_symbols"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "supporter_credit"}}
+                    >{{t
+                        "Add 1 Supporter Credit"
+                        key="add_supporter_credit"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "check_remote"}}
+                    >{{t
+                        "Re-Check Purchase Status"
+                        key="recheck_purchase_status"
+                      }}</a></li>
+                  <li><a href="#" {{action "set_subscription" "restore"}}>{{t
+                        "Restore Disabled Purchase"
+                        key="restore_disabled_purchase"
+                      }}</a></li>
+                  <li><a href="#" {{action "set_subscription" "add_voice"}}>{{t
+                        "Add Premium Voice"
+                        key="add_premium_voice"
+                      }}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "add_5_years"}}
+                    >{{t "Add 5 Years" key="add_five_years"}}</a></li>
+                  <li><a
+                      href="#"
+                      {{action "set_subscription" "force_logout"}}
+                    >{{t "Force Logout" key="force_logout"}}</a></li>
                 </ul>
               </div>
             {{/if}}
           </div>
 
-          <h5 style="margin-top: 20px;">{{t "Recent Usage:" key='recent usage'}}</h5>
+          <h5 style="margin-top: 20px;">{{t
+              "Recent Usage:"
+              key="recent usage"
+            }}</h5>
           {{#if daily_use.loading}}
-            <p>{{t "Loading..." key='loading'}}</p>
+            <p>{{t "Loading..." key="loading"}}</p>
           {{else if daily_use.error}}
-            <p>{{t "Error loading data" key='error_loading_data'}}</p>
+            <p>{{t "Error loading data" key="error_loading_data"}}</p>
           {{else if daily_use.daily_use_history}}
-            <div class='daily_use'>
+            <div class="daily_use">
               {{raw_daily_use}}
             </div>
           {{else}}
-            <p>{{t "No data loaded" key='no_data_loaded'}}</p>
+            <p>{{t "No data loaded" key="no_data_loaded"}}</p>
           {{/if}}
 
-          <h5 style="margin-top: 20px;">{{t "Devices:" key='devices_colon'}}</h5>
-            {{#if model.devices}}
-              <table class="table table-striped table-hover">
-                <thead>
+          <h5 style="margin-top: 20px;">{{t
+              "Devices:"
+              key="devices_colon"
+            }}</h5>
+          {{#if model.devices}}
+            <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th>{{t "Name" key="name"}}</th>
+                  <th>{{t "V" key="V"}}</th>
+                  <th>{{t "User Agent" key="user_agent"}}</th>
+                  <th>{{t "IP" key="ip"}}</th>
+                  <th>{{t "Date" key="date"}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each filtered_devices as |device|}}
                   <tr>
-                    <th>{{t "Name" key='name'}}</th>
-                    <th>{{t "V" key='V'}}</th>
-                    <th>{{t "User Agent" key='user_agent'}}</th>
-                    <th>{{t "IP" key='ip'}}</th>
-                    <th>{{t "Date" key='date'}}</th>
+                    <td>{{device.name}}
+                      <div
+                        style="font-size: 12px; color: #888;"
+                      >{{device.ref_id}}</div>
+                    </td>
+                    <td>
+                      {{device.app_version}}<br />
+                      {{device.token_type}}
+                    </td>
+                    <td
+                      style="width: 30%; font-size: 10px;"
+                    >{{device.user_agent}}</td>
+                    <td>{{device.ip_address}}</td>
+                    <td>
+                      {{date device.last_used}}
+                      <div style="font-size: 12px;">
+                        {{t "expires after" key="expires_after"}}
+                        {{device.token_timeout}}{{t ", or" key="comma_or"}}
+                        {{device.inactivity_timeout}}
+                        {{t "of inactivity" key="of_inactivity"}}
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {{#each filtered_devices as |device|}}
-                    <tr>
-                      <td>{{device.name}}
-                        <div style='font-size: 12px; color: #888;'>{{device.ref_id}}</div>
-                      </td>
-                      <td>
-                        {{device.app_version}}<br/>
-                        {{device.token_type}}
-                      </td>
-                      <td style='width: 30%; font-size: 10px;'>{{device.user_agent}}</td>
-                      <td>{{device.ip_address}}</td>
-                      <td>
-                        {{date device.last_used}}
-                        <div style='font-size: 12px;'>
-                          {{t "expires after" key='expires_after'}}
-                          {{device.token_timeout}}{{t ", or" key='comma_or'}}
-                          {{device.inactivity_timeout}} 
-                          {{t "of inactivity" key='of_inactivity'}}
-                        </div>
-                      </td>
-                    </tr>
-                  {{/each}}
-                </tbody>
-              </table>
-            {{else}}
-              {{t "None found" key='none_found'}}
-            {{/if}}
+                {{/each}}
+              </tbody>
+            </table>
+          {{else}}
+            {{t "None found" key="none_found"}}
+          {{/if}}
         {{/if}}
       </div>
     </div>
   {{/if}}
 {{else}}
-  {{t "This account is private. Nothing to see here, move along." key='private_account'}}
+  {{t
+    "This account is private. Nothing to see here, move along."
+    key="private_account"
+  }}
 {{/if}}

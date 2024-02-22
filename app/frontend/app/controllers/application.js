@@ -20,6 +20,7 @@ import speecher from "../utils/speecher";
 import session from "../utils/session";
 import obf from "../utils/obf";
 import Button from "../utils/button";
+import { redirect_to_modern_view } from "../utils/redirect_login";
 import { htmlSafe } from "@ember/string";
 import { inject } from "@ember/controller";
 import { observer } from "@ember/object";
@@ -412,17 +413,7 @@ export default Controller.extend({
   ),
   actions: {
     onMoveToModernView() {
-      if (window.coughdrop_modern_view_host) {
-        const betaDomainURL = window.coughdrop_modern_view_host + "/new-login";
-        const user_name = session.user_name;
-        const device_key = stashes
-          .get_raw("coughDropDeviceId")
-          .replace(" " + capabilities.readable_device_name, "");
-        const access_token = session.access_token;
-        const queryParams = `?jump_to_beta=true&user_name=${user_name}&device_key=${device_key}&access_token=${access_token}`;
-        console.log(betaDomainURL, queryParams);
-        window.location.href = betaDomainURL + queryParams;
-      }
+      redirect_to_modern_view();
     },
     invalidateSession: function () {
       session.invalidate(true);
