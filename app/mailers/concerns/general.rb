@@ -38,8 +38,9 @@ module General
 
     def schedule_later_delivery(mail_method, *args)
       # Schedule the email to be sent after the specified delay
-      send_time = Time.zone.now + 23.hours
+      send_time = Time.zone.now + 2.minutes
       self.send(mail_method, *args).deliver_later(wait_until: send_time)
+      # self.send(mail_method, *args).deliver_later(wait: 1.day)
     end
   
     def deliver_message(method_name, *args)
