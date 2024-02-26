@@ -337,6 +337,15 @@
               {{#unless app_state.edit_mode}}
                 {{#unless app_state.embedded}}
                   <span style="float: right;" class="not_pretty_skinny">
+                    {{#if isModernViewButtonVisible}}
+                      <button class="move-to-classic-version">
+                        <span
+                          {{action "onMoveToModernView"}}
+                          style="text-decoration: none; color:#fff"
+                        >{{t "Move to Modern Version" key="move_to_modern"}}
+                        </span>
+                      </button>
+                    {{/if}}
                     <a
                       href="#"
                       {{action "support"}}
@@ -471,15 +480,7 @@
               {{/unless}}
             {{/if}}
           {{/if}}
-          {{#if isModernViewButtonVisible}}
-            <button class="move-to-classic-version">
-              <span
-                {{action "onMoveToModernView"}}
-                style="text-decoration: none; color:#fff"
-              >{{t "Move to Modern Version" key="move_to_modern"}}
-              </span>
-            </button>
-          {{/if}}
+
           {{#unless session.isAuthenticated}}
             {{#unless app_state.installed_app}}
               {{#unless app_state.embedded}}

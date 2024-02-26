@@ -6066,14 +6066,15 @@ body:-ms-fullscreen {
     }
   }
   .move-to-classic-version {
-    border: 1px solid #315ede;
+    border: 1px solid #121212;
     font-size: 16px;
     font-weight: bold;
     color: #fff;
-    background-color: #315ede;
-    border-radius: 25px 25px;
-    padding: 9px 14px;
-    /* font-style: italic;*/
+    background-color: #994499;
+    border-radius: 8px;
+    /* border-radius: 25px 25px; */
+    padding: 12px 20px;
+    /* font-style: italic; */
   }
 }
 @media (max-height: 650px) {
