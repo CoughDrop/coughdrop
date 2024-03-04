@@ -140,9 +140,12 @@ class Api::SearchController < ApplicationController
     # "https://opensymbols.s3.amazonaws.com/libraries/arasaac/to be reflected.png"
     # but it must also work for already-escaped URLs like
     # "http://www.stephaniequinn.com/Music/Commercial%2520DEMO%2520-%252013.mp3"
-    uri = URI.parse(params['url']) rescue nil
-    Rails.logger.warn("proxying #{params['url']}")
-    uri ||= URI.parse(URI.escape(params['url']))
+    a, b = (params['url'] || '').split(/\/\//, 2)
+    b = (b || '').sub(/\/\//, '/').to_s if b.match(/^opensymbols/)
+    url = [a, b].join("//")
+    uri = URI.parse(url) rescue nil
+    Rails.logger.warn("proxying #{url}")
+    uri ||= URI.parse(URI.escape(uri))
     # TODO: add timeout for slow requests
     request = Typhoeus::Request.new(uri.to_s, followlocation: true)
     begin
@@ -251,6 +254,7 @@ class Api::SearchController < ApplicationController
     send_data req.body, :type => content_type, :disposition => 'inline'
   end
   
+
   def get_url_in_chunks(request)
     content_type = nil
     body = ""
@@ -274,7 +278,7 @@ class Api::SearchController < ApplicationController
             raise BadFileError, "Invalid file type, #{content_type}"
           end
         else
-          raise BadFileError, "File not retrieved, status #{response.code}"
+          raise BadFileError, "File not retrieved, status #{response.code} for #{request.url}"
         end
         url_response = nil
       end
