@@ -141,7 +141,7 @@ class Api::SearchController < ApplicationController
     # but it must also work for already-escaped URLs like
     # "http://www.stephaniequinn.com/Music/Commercial%2520DEMO%2520-%252013.mp3"
     a, b = (params['url'] || '').split(/\/\//, 2)
-    b = (b || '').sub(/\/\//, '/').to_s if b.match(/^opensymbols/)
+    b = (b || '').sub(/\/\//, '/').to_s if b && b.match(/^opensymbols/)
     url = [a, b].join("//")
     uri = URI.parse(url) rescue nil
     Rails.logger.warn("proxying #{url}")
