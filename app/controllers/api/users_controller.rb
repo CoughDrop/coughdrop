@@ -613,7 +613,7 @@ class Api::UsersController < ApplicationController
         api_error 400, {email_sent: false, users: 0, error: message, message: message}
       end
     else
-      if params['key'] && params['key'].match(/@/)
+      if params['key'] && params['key'].match(/@/) && users.present?
         UserMailer.schedule_delivery(:login_no_user, params['key'])
         render json: {email_sent: true, users: 0}.to_json
       else
