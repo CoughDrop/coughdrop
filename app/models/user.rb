@@ -553,9 +553,12 @@ class User < ActiveRecord::Base
     elsif url && url != 'default'
       # NOTE: somewhere we should enforce that it's coming from a reliable location, or provide a fallback
       url
-    else
-      email_md5 = Digest::MD5.hexdigest(self.settings['email'] || "none")
+    elsif self.settings['email'] && false
+      # TODO: gravatar seems to be breaking on iOS-only all of the sudden
+      email_md5 = Digest::MD5.hexdigest(self.settings['email'])
       "https://www.gravatar.com/avatar/#{email_md5}?s=100&d=#{CGI.escape(fallback)}"
+    else
+      fallback
     end
   end
   
