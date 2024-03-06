@@ -269,19 +269,18 @@ class Api::SearchController < ApplicationController
       if url_response
         response = url_response
         # Some services (ahem, flickr) are returning a Location header, along with the response body
-        if url_response.headers['Location'] && (url_response.code >= 300 || (url_response.headers['Content-Length'] && url_response.headers['Content-Length'].to_i <= url_response.headers['Location'].length))
-          return ['redirect', URI.escape(url_response.headers['Location'])]
-        elsif url_response.code == 302 && url_response.headers['Link']
-          puts URI.escape(url_response.headers['Link'].split(/<|>/)[1])
-          return ['redirect', URI.escape(url_response.headers['Link'].split(/<|>/)[1])]
+        if response.headers['Location'] && (response.code >= 300 || (response.headers['Content-Length'] && response.headers['Content-Length'].to_i <= response.headers['Location'].length))
+          return ['redirect', URI.escape(response.headers['Location'])]
+        elsif response.code == 302 && response.headers['Link']
+          return ['redirect', URI.escape(response.headers['Link'].split(/<|>/)[1])]
         end
-        if url_response.success? || url_response.code == 200
-          content_type = url_response.headers['Content-Type']
+        if response.success? || response.code == 200
+          content_type = response.headers['Content-Type']
           if !content_type.match(/^image/) && !content_type.match(/^audio/) && !content_type.match(/text\/json/)
             raise BadFileError, "Invalid file type, #{content_type}"
           end
         else
-          raise BadFileError, "File not retrieved, #{url_response.headers['Location']} status #{url_response.code} for #{url_response.url}"
+          raise BadFileError, "File not retrieved, status #{response.code} for #{request.url}"
         end
         url_response = nil
       end
