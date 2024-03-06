@@ -145,7 +145,7 @@ class Api::SearchController < ApplicationController
     url = [a, b].join("//")
     uri = URI.parse(url) rescue nil
     Rails.logger.warn("proxying #{url}")
-    uri ||= URI.parse(URI.escape(uri))
+    uri ||= URI.parse(URI.escape(url))
     # TODO: add timeout for slow requests
     request = Typhoeus::Request.new(uri.to_s, followlocation: true)
     begin
