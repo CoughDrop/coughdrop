@@ -211,8 +211,8 @@ class Api::UsersController < ApplicationController
   
   def create
     hashed_email = User.generate_email_hash(params["user"]["email"])
-    if User.find_by(user_name: params["user"]["user_name"]).present? || User.find_by(email_hash: hashed_email).present?
-      return api_error(400, {error: "email or user-name is already in use", email_error: true})
+    if User.find_by(email_hash: hashed_email).present?
+      return api_error(400, {error: "email is already in use", email_error: true})
     end
 
     if params['user'] && params['user']['start_code']
