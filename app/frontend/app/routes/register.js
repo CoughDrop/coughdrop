@@ -64,7 +64,11 @@ export default Route.extend({
         controller.set('registering', {error: true});
         if(err.errors && err.errors[0] == 'blocked email address') {
           controller.set('registering', {error: {email_blocked: true}});
-        } else if(err.errors && err.errors[0] && err.errors[0].start_code_error) {
+        } 
+        else if(err.errors && err.errors[0].email_error){
+          controller.set('registering', {error: {email_error: true}});
+        }
+        else if(err.errors && err.errors[0] && err.errors[0].start_code_error) {
           controller.set('registering', {error: {start_code: true}});
         }
       });

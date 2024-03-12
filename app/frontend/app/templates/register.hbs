@@ -58,6 +58,9 @@
           {{#if badEmail}}
             <span class='text-danger'>{{t "email required" key='email_required'}}</span>
           {{/if}}
+        {{#if registering.error.email_error}}
+         <span class='text-danger'>{{t "email is already exists." key='email_required'}}</span>
+        {{/if}}
         </div>
       </div>
       <div class="form-group">
@@ -125,7 +128,7 @@
               {{else if registering.error.start_code}}
                 {{t "Please re-check the start code" key='check_start_code'}}
               {{else}}
-                {{t "There was an unexpected error while registering" key='error_registering'}}
+                {{!-- {{t "There was an unexpected error while registering" key='error_registering'}} --}}
               {{/if}}
             </p>
           {{/if}}
