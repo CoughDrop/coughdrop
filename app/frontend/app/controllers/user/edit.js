@@ -190,7 +190,11 @@ export default Controller.extend({
       }, function(err) {
         if(err.responseJSON && err.responseJSON.errors && err.responseJSON.errors[0] == "incorrect current password") {
           modal.error(i18n.t('incorrect_password', "Incorrect current password"));
-        } else {
+        }
+        else if (err.errors&& err.errors[0].email_error) {
+          modal.error(i18n.t("email_is_already_in_use", "email is already exists."));
+        }
+        else {
           modal.error(i18n.t('save_failed', "Save failed."));
         }
       });
