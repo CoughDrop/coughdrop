@@ -173,6 +173,10 @@ class Api::UsersController < ApplicationController
   
   def update
     user = User.find_by_path(params['id'])
+    hashed_email = User.generate_email_hash(params["user"]["email"])
+    if user.email_hash!=hashed_email && User.find_by(email_hash: hashed_email).present?
+      return api_error(400, {error: "email is already in use", email_error: true})
+    end
     user_device = (user && @api_user && @api_user.global_id == user.global_id) && Device.find_by_global_id(@api_device_id)
     return unless exists?(user)
     options = {}
