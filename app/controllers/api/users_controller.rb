@@ -214,9 +214,13 @@ class Api::UsersController < ApplicationController
   end
   
   def create
+    
     hashed_email = User.generate_email_hash(params["user"]["email"])
-    if User.find_by(email_hash: hashed_email).present?
-      return api_error(400, {error: "email is already in use", email_error: true})
+    existing_user = User.find_by(email_hash: hashed_email)
+    if existing_user.present?
+      if existing_user.settings["subscription"]["expiration_source"] == "free_trial"
+        return api_error(400, {error: "email is already in use", email_error: true})
+      end
     end
 
     if params['user'] && params['user']['start_code']
