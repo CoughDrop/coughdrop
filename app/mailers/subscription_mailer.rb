@@ -85,24 +85,24 @@ class SubscriptionMailer < ActionMailer::Base
   def expiration_approaching(user_id)
     return unless full_domain_enabled
     @user = User.find_by_global_id(user_id)
-    mail_message(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
+    mail_message_with_bcc(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
   end
   
   def one_day_until_expiration(user_id)
     return unless full_domain_enabled
     @user = User.find_by_global_id(user_id)
-    mail_message(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
+    mail_message_with_bcc(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
   end
   
   def one_week_until_expiration(user_id)
     return unless full_domain_enabled
     @user = User.find_by_global_id(user_id)
-    mail_message(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
+    mail_message_with_bcc(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
   end
   
   def subscription_expired(user_id)
     @user = User.find_by_global_id(user_id)
-    mail_message(@user, "Subscription Expired")
+    mail_message_with_bcc(@user, "Subscription Expired")
   end
 
   def subscription_expiring(user_id)
