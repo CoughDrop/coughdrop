@@ -1,102 +1,258 @@
 {{#if model.subscription}}
-  <h2>{{t "Billing Details" key='billing_details'}}</h2>
+  <h2>{{t "Billing Details" key="billing_details"}}</h2>
   <div class="row">
-  <div class='col-sm-9'>
-    {{#if subscription.user.subscription.never_expires}}
-      <span class='glyphicon glyphicon-heart' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You are lucky! Somehow you get set up with a plan that never expires! Like, never, ever! If you for some reason you want to change that you're welcome to." key='never_expires_explanation'}}
-    {{else if subscription.user.is_sponsored}}
-      {{#if subscription.user.pending_org}}
-        <span class='glyphicon glyphicon-user' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "<b>%{org}</b> wants to sponsor this user as part of their organization. This addition must be approved before it is complete." key='confirm_pending_org' org=model.pending_org.name}}
-        <br/><br/>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' true}}>{{t "Approve %{org}" org=model.pending_org.name}}</button>
-        <button class="btn btn-default" {{action 'approve_or_reject_org' false}}>{{t "Deny Access"}}</button>
-      {{else}}
-        <span class='glyphicon glyphicon-user' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "Your account is being sponsored by the organization, <b>%{org}</b>. We hope everything is going well for you and %app_name% is making a difference!" key='org_managed' org=subscription.user.managing_org.name}}
-      {{/if}}
-    {{else if subscription.user.subscription.started}}
-      {{#if subscription.user_expiring}}
-        <span class='glyphicon glyphicon-time' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "You were signed up for the monthly subscription plan, <b>%{plan}</b>, but it is no longer in effect, and you should update your subscription. Your premium access is set to expire " key='subscription_expires' plan=subscription.subscription_plan_description}} <span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>.
-      {{else}}
-        <span class='glyphicon glyphicon-calendar' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "You are signed up for the monthly subscription plan, <b>%{plan}</b>. We hope everything is going well for you and %app_name% is making a difference!" key='monthly_plan' plan=subscription.subscription_plan_description}}
-      {{/if}}
-    {{else if subscription.user.subscription.purchased}}
-      {{# if subscription.user_expiring}}
-        <span class='glyphicon glyphicon-time' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "You've purchased a %app_name% license, thank you! You've had access to cloud extras like reporting and team communication, but those will be expiring soon unless you update your purchase. Your account will continue working for communication, but access to cloud extras like reporting and team communication will expire " key='long_term_expiring' plan=subscription.subscription_plan_description}}<span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>
-      {{else}}
-        <span class='glyphicon glyphicon-calendar' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-        {{t "You've purchased a %app_name% license, thank you! We hope everything is going well for you and %app_name% is making a difference! You can use %app_name% as long as you like, and in addition you have free access to cloud extras like reporting and team communication through " key='long_term_explanation' plan=subscription.subscription_plan_description}} <span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>
-      {{/if}}
-    {{else if subscription.user.subscription.grace_trial_period}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You haven't purchased %app_name% yet. Currently you're running in a free trial, and hopefully you're learning a lot and getting excited for what %app_name% can do! Your trial will end" key='trial_ending'}} <span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>.
-    {{else if subscription.user.subscription.grace_period}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You haven't purchased a long-term %app_name% license, and don't have an active subscription. Currently you're running in a grace period, and hopefully you've had a positive experience using %app_name%! Your grace period will end and you will need to purchase or subscribe by " key='trial_ending2'}} <span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>.
-    {{else if subscription.user.subscription.lapsed}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "Thank you for purchasing %app_name%! You do not currently have an active subscription. Don't worry, you can still use %app_name% as a robust, cloud-based communication system, but the cloud extras are currently disabled for your account. If you need those features please consider purchasing an ongoing subscription." key='lapsed_consider_subscribing'}}
-    {{else if subscription.user.subscription.premium_supporter}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You are signed up for a supervisor account. Thank you for supporting communicators using %app_name%! This account is set as a support account, so some features will only work if you are connected to a paid communicator. If you plan to use this as a communication account you should purchase a full communicator account instead." key='premium_supporter_consider_purchasing'}}
-    {{else if subscription.user.subscription.eval_account}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "This account is registered as an evaluator account. Thank you for supporting communicators using %app_name%! This account is an evaluator account, so it has full access to communication features, but will auto-reset at the end of each evaluation. You can manage eval settings from the \"Extras\" menu on the user account page." key='eval_auto_resets'}}
-    {{else if subscription.user.modeling_only}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "This is a modeling-only account. This type of account can be used to support linked communicators! You can download a communicator's boards to practice, learn, and show them examples they can try on their own. If you would also like access to user reports, goals, and edit access, you should purchase premium supporter access." key='modeling_only_consider_purchasing'}}
-    {{else if subscription.user_expired}}
-      <span class='glyphicon glyphicon-exclamation-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "Your premium account has expired. Please select a new billing option." key='subscription_expired'}}
-    {{else if subscription.user.subscription.currently_premium}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "Thank you for purchasing %app_name%! This account has cloud extra features enabled and is fully functional. We hope %app_name% is working well for you!" key='currently_premium'}}
-    {{else if subscription.user.subscription.premium_supporter_as_communicator}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You purchased %app_name% using a premium supporter account, but have currently set it as a communicator role. As such, some features will be limited in this account. You can switch back to a supporter role to remove this notice. If you would like to fully unlock the communicator role, please purchase a full license of %app_name%." key='expired_but_only_as_communicator'}}
-    {{else}}
-      <span class='glyphicon glyphicon-info-sign' style="float: left; font-size: 30px; margin-right: 10px;"></span>
-      {{t "You haven't purchased a long-term %app_name% license, and don't have an active subscription. Currently you're running a free trial, hopefully you're learning a lot and getting excited for what %app_name% can do! Your trial will end" key='trial_ending3'}} <span style='white-space: nowrap;'>{{date subscription.user.subscription.expires}}</span>.
-    {{/if}}
-    {{#if subscription.user.subscription.extras_enabled}}
-      <p style='margin-top: 20px;'>{{t "Your account also has access to premium symbols, so you can search through and include additional symbols from SymbolStix, or PCS (BoardMaker) by Tobii Dynavox in your boards." key='premium_symbols_enabled'}}</p>
-    {{/if}}
-    <div style="clear: left;"></div>
-    {{#if subscription.user.currently_premium}}
-      {{#unless subscription.user.subscription.eval_account}}
-      {{#unless subscription.user.subscription.never_expires}}
-        <p style="margin-top: 10px;">
-          <a href="#" {{action 'show_expiration_notes'}}>{{t "what happens if my \"cloud extras\" access expires?" key='what_happens_expires'}}</a>
-        </p>
-        {{#if show_expiration_notes}}
-          <p class="explanation" style="margin-top: 10px;">
-            {{t "We don't want to shut off anyone's voice, even if funding unexpectedly becomes an issue down the line. If a user's subscription expires %app_name% will still work as a communication system but premium features like reporting and video notes will be disabled." key='expiration_notes_pre2'}}
-            {{#if app_state.domain_settings.support_url}}
-              {{t "If you need help with funding please" key='expiration_notes_support'}}
-              <a href={{app_state.domain_settings.support_url}}>{{t "contact our support team" key='contact_support_team'}}</a> {{t "for more information." key='expiration_notes'}}
-            {{/if}}
-          </p>
+    <div class="col-sm-9">
+      {{#if subscription.user.subscription.never_expires}}
+        <span
+          class="glyphicon glyphicon-heart"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You are lucky! Somehow you get set up with a plan that never expires! Like, never, ever! If you for some reason you want to change that you're welcome to."
+          key="never_expires_explanation"
+        }}
+      {{else if subscription.user.is_sponsored}}
+        {{#if subscription.user.pending_org}}
+          <span
+            class="glyphicon glyphicon-user"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "<b>%{org}</b> wants to sponsor this user as part of their organization. This addition must be approved before it is complete."
+            key="confirm_pending_org"
+            org=model.pending_org.name
+          }}
+          <br /><br />
+          <button
+            class="btn btn-default"
+            {{action "approve_or_reject_org" true}}
+          >{{t "Approve %{org}" org=model.pending_org.name}}</button>
+          <button
+            class="btn btn-default"
+            {{action "approve_or_reject_org" false}}
+          >{{t "Deny Access"}}</button>
+        {{else}}
+          <span
+            class="glyphicon glyphicon-user"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "Your account is being sponsored by the organization, <b>%{org}</b>. We hope everything is going well for you and %app_name% is making a difference!"
+            key="org_managed"
+            org=subscription.user.managing_org.name
+          }}
         {{/if}}
-      {{/unless}}
-      {{/unless}}
-    {{/if}}
-  </div>
+      {{else if subscription.user.subscription.started}}
+        {{#if subscription.user_expiring}}
+          <span
+            class="glyphicon glyphicon-time"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "You were signed up for the monthly subscription plan, <b>%{plan}</b>, but it is no longer in effect, and you should update your subscription. Your premium access is set to expire "
+            key="subscription_expires"
+            plan=subscription.subscription_plan_description
+          }}
+          <span style="white-space: nowrap;">{{date
+              subscription.user.subscription.expires
+            }}</span>.
+        {{else}}
+          <span
+            class="glyphicon glyphicon-calendar"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "You are signed up for the monthly subscription plan, <b>%{plan}</b>. We hope everything is going well for you and %app_name% is making a difference!"
+            key="monthly_plan"
+            plan=subscription.subscription_plan_description
+          }}
+        {{/if}}
+      {{else if subscription.user.subscription.purchased}}
+        {{#if subscription.user_expiring}}
+          <span
+            class="glyphicon glyphicon-time"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "You've purchased a %app_name% license, thank you! You've had access to cloud extras like reporting and team communication, but those will be expiring soon unless you update your purchase. Your account will continue working for communication, but access to cloud extras like reporting and team communication will expire "
+            key="long_term_expiring"
+            plan=subscription.subscription_plan_description
+          }}<span style="white-space: nowrap;">{{date
+              subscription.user.subscription.expires
+            }}</span>
+        {{else}}
+          <span
+            class="glyphicon glyphicon-calendar"
+            style="float: left; font-size: 30px; margin-right: 10px;"
+          ></span>
+          {{t
+            "You've purchased a %app_name% license, thank you! We hope everything is going well for you and %app_name% is making a difference! You can use %app_name% as long as you like, and in addition you have free access to cloud extras like reporting and team communication through "
+            key="long_term_explanation"
+            plan=subscription.subscription_plan_description
+          }}
+          <span style="white-space: nowrap;">{{date
+              subscription.user.subscription.expires
+            }}</span>
+        {{/if}}
+      {{else if subscription.user.subscription.grace_trial_period}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You haven't purchased %app_name% yet. Currently you're running in a free trial, and hopefully you're learning a lot and getting excited for what %app_name% can do! Your trial will end"
+          key="trial_ending"
+        }}
+        <span style="white-space: nowrap;">{{date
+            subscription.user.subscription.expires
+          }}</span>.
+      {{else if subscription.user.subscription.grace_period}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You haven't purchased a long-term %app_name% license, and don't have an active subscription. Currently you're running in a grace period, and hopefully you've had a positive experience using %app_name%! Your grace period will end and you will need to purchase or subscribe by "
+          key="trial_ending2"
+        }}
+        <span style="white-space: nowrap;">{{date
+            subscription.user.subscription.expires
+          }}</span>.
+      {{else if subscription.user.subscription.lapsed}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "Thank you for purchasing %app_name%! You do not currently have an active subscription. Don't worry, you can still use %app_name% as a robust, cloud-based communication system, but the cloud extras are currently disabled for your account. If you need those features please consider purchasing an ongoing subscription."
+          key="lapsed_consider_subscribing"
+        }}
+      {{else if subscription.user.subscription.premium_supporter}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You are signed up for a supervisor account. Thank you for supporting communicators using %app_name%! This account is set as a support account, so some features will only work if you are connected to a paid communicator. If you plan to use this as a communication account you should purchase a full communicator account instead."
+          key="premium_supporter_consider_purchasing"
+        }}
+      {{else if subscription.user.subscription.eval_account}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          'This account is registered as an evaluator account. Thank you for supporting communicators using %app_name%! This account is an evaluator account, so it has full access to communication features, but will auto-reset at the end of each evaluation. You can manage eval settings from the "Extras" menu on the user account page.'
+          key="eval_auto_resets"
+        }}
+      {{else if subscription.user.modeling_only}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "This is a modeling-only account. This type of account can be used to support linked communicators! You can download a communicator's boards to practice, learn, and show them examples they can try on their own. If you would also like access to user reports, goals, and edit access, you should purchase premium supporter access."
+          key="modeling_only_consider_purchasing"
+        }}
+      {{else if subscription.user_expired}}
+        <span
+          class="glyphicon glyphicon-exclamation-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "Your premium account has expired. Please select a new billing option."
+          key="subscription_expired"
+        }}
+      {{else if subscription.user.subscription.currently_premium}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "Thank you for purchasing %app_name%! This account has cloud extra features enabled and is fully functional. We hope %app_name% is working well for you!"
+          key="currently_premium"
+        }}
+      {{else if
+        subscription.user.subscription.premium_supporter_as_communicator
+      }}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You purchased %app_name% using a premium supporter account, but have currently set it as a communicator role. As such, some features will be limited in this account. You can switch back to a supporter role to remove this notice. If you would like to fully unlock the communicator role, please purchase a full license of %app_name%."
+          key="expired_but_only_as_communicator"
+        }}
+      {{else}}
+        <span
+          class="glyphicon glyphicon-info-sign"
+          style="float: left; font-size: 30px; margin-right: 10px;"
+        ></span>
+        {{t
+          "You haven't purchased a long-term %app_name% license, and don't have an active subscription. Currently you're running a free trial, hopefully you're learning a lot and getting excited for what %app_name% can do! Your trial will end"
+          key="trial_ending3"
+        }}
+        <span style="white-space: nowrap;">{{date
+            subscription.user.subscription.expires
+          }}</span>.
+      {{/if}}
+      {{#if subscription.user.subscription.extras_enabled}}
+        <p style="margin-top: 20px;">{{t
+            "Your account also has access to premium symbols, so you can search through and include additional symbols from SymbolStix, or PCS (BoardMaker) by Tobii Dynavox in your boards."
+            key="premium_symbols_enabled"
+          }}</p>
+      {{/if}}
+      <div style="clear: left;"></div>
+      {{#if subscription.user.currently_premium}}
+        {{#unless subscription.user.subscription.eval_account}}
+          {{#unless subscription.user.subscription.never_expires}}
+            <p style="margin-top: 10px;">
+              <a href="#" {{action "show_expiration_notes"}}>{{t
+                  'what happens if my "cloud extras" access expires?'
+                  key="what_happens_expires"
+                }}</a>
+            </p>
+            {{#if show_expiration_notes}}
+              <p class="explanation" style="margin-top: 10px;">
+                {{t
+                  "We don't want to shut off anyone's voice, even if funding unexpectedly becomes an issue down the line. If a user's subscription expires %app_name% will still work as a communication system but premium features like reporting and video notes will be disabled."
+                  key="expiration_notes_pre2"
+                }}
+                {{#if app_state.domain_settings.support_url}}
+                  {{t
+                    "If you need help with funding please"
+                    key="expiration_notes_support"
+                  }}
+                  <a href={{app_state.domain_settings.support_url}}>{{t
+                      "contact our support team"
+                      key="contact_support_team"
+                    }}</a>
+                  {{t "for more information." key="expiration_notes"}}
+                {{/if}}
+              </p>
+            {{/if}}
+          {{/unless}}
+        {{/unless}}
+      {{/if}}
+    </div>
   </div>
   {{#if subscription.no_purchasing}}
     <p style="margin: 50px 0; font-size: 18px;">
-      {{t "To modify your billing settings, please update your account by <b>visiting mycoughdrop.com</b> in your web browser. Make sure to sync this device after you purchase to update your changes." key='go_to_web_site'}}
+      {{t
+        "To modify your billing settings, please update your account by <b>visiting mycoughdrop.com</b> in your web browser. Make sure to sync this device after you purchase to update your changes."
+        key="go_to_web_site"
+      }}
     </p>
     {{#unless subscription.show_options}}
       {{#unless subscription.user.is_sponsored}}
         {{#if subscription.user.subscription.started}}
           {{#if app_state.domain_settings.full_domain}}
             <div style="margin-top: 20px;">
-              <a class='btn btn-default' href="#" {{action 'cancel_subscription'}}>{{t "Cancel my Subscription" key='cancel_my_subscription'}}</a>
+              <a
+                class="btn btn-default"
+                href="#"
+                {{action "cancel_subscription"}}
+              >{{t "Cancel my Subscription" key="cancel_my_subscription"}}</a>
             </div>
           {{/if}}
         {{/if}}
@@ -105,20 +261,39 @@
       {{#if subscription.show_cancel}}
         {{#if session.isAuthenticated}}
           <div style="margin-top: 20px;">
-            <h3>{{t "Cancel Subscription" key='cancel_subscription'}}</h3>
+            <h3>{{t "Cancel Subscription" key="cancel_subscription"}}</h3>
             {{#if subscription.canceling}}
-              <p>{{t "Canceling subscription..." key='canceling'}}</p>
+              <p>{{t "Canceling subscription..." key="canceling"}}</p>
             {{else}}
-              <p>{{t "We are sorry to see you go! Are you sure you want to cancel your subscription? This will remove your access to premium features in %app_name% like reports and logging." key='confirm_cancel_subscription'}}</p>
-              <p style='display: block; max-width: 500px;'>{{input type='text' value=cancel_reason class='form-control' placeholder='Can you share your reason for canceling?'}}</p>
-              <button type="button" class="btn btn-primary" {{action 'cancel_subscription' true}}>{{t "Cancel Subscription" key='cancel_subscription'}}</button>
-              <button type="button" class="btn btn-default" {{action "reset"}}>{{t "Never Mind" key='never_mind'}}</button>
+              <p>{{t
+                  "We are sorry to see you go! Are you sure you want to cancel your subscription? This will remove your access to premium features in %app_name% like reports and logging."
+                  key="confirm_cancel_subscription"
+                }}</p>
+              <p style="display: block; max-width: 500px;">{{input
+                  type="text"
+                  value=cancel_reason
+                  class="form-control"
+                  placeholder="Can you share your reason for canceling?"
+                }}</p>
+              <button
+                type="button"
+                class="btn btn-primary"
+                {{action "cancel_subscription" true}}
+              >{{t "Cancel Subscription" key="cancel_subscription"}}</button>
+              <button
+                type="button"
+                class="btn btn-default"
+                {{action "reset"}}
+              >{{t "Never Mind" key="never_mind"}}</button>
             {{/if}}
           </div>
         {{else}}
           <div style="margin-top: 20px;">
-            <h3>{{t "Cancel Subscription" key='cancel_subscription'}}</h3>
-            <p>{{t "You'll need to log in before you can cancel your subscription" key='login_before_canceling'}}</p>
+            <h3>{{t "Cancel Subscription" key="cancel_subscription"}}</h3>
+            <p>{{t
+                "You'll need to log in before you can cancel your subscription"
+                key="login_before_canceling"
+              }}</p>
             {{login-form left=true return=true}}
           </div>
         {{/if}}
@@ -126,24 +301,48 @@
     {{/unless}}
   {{else}}
     {{#if show_premium_symbols}}
-      <h4>{{t "Premium Symbols" key='premium_symbols'}}</h4>
-      <img src="https://www.opensymbols.org/repositories/pcs.png" style="float: left;width: 100px;">
-      <p style='max-width: 600px;'>{{t "%app_name%'s default symbol libraries are a collection of great, open-licensed images that can be shared publicly and used on lots of different projects. However, sometimes you may need a specific symbol library that communicators have been using longer." key='premium_symbols_explainer_1'}}</p>
+      <h4>{{t "Premium Symbols" key="premium_symbols"}}</h4>
+      <img
+        src="https://www.opensymbols.org/repositories/pcs.png"
+        style="float: left;width: 100px;"
+      />
+      <p style="max-width: 600px;">{{t
+          "%app_name%'s default symbol libraries are a collection of great, open-licensed images that can be shared publicly and used on lots of different projects. However, sometimes you may need a specific symbol library that communicators have been using longer."
+          key="premium_symbols_explainer_1"
+        }}</p>
       {{#unless subscription.app_pricing_override}}
-        <p style='max-width: 600px;'>{{t "If that's the case, you can purchase access to additional premium symbols from SymbolStix, or PCS (BoardMaker) by Tobii Dynavox by paying a one-time $25 fee to grant access to these symbols." key='premium_symbols_explainer_2'}}</p>
+        <p style="max-width: 600px;">{{t
+            "If that's the case, you can purchase access to additional premium symbols from SymbolStix, or PCS (BoardMaker) by Tobii Dynavox by paying a one-time $25 fee to grant access to these symbols."
+            key="premium_symbols_explainer_2"
+          }}</p>
       {{/unless}}
-      <div style='clear left;'></div>
+      <div style="clear left;"></div>
       <div>
         {{#if extras_status.confirming}}
-          <p>{{t "Confirming Purchase..." key='confirming_purchase'}}</p>
+          <p>{{t "Confirming Purchase..." key="confirming_purchase"}}</p>
         {{else}}
-          <button class='btn btn-primary btn-lg' {{action 'purchase_premium_symbols'}}>{{t "Purchase Premium Symbols (US$45)" key='purchase_premium_symbols_with_price'}}</button>
-          <button class='btn btn-default btn-lg' {{action 'premium_symbols' false}}>{{t "Cancel" key='cancel'}}</button>
+          <button
+            class="btn btn-primary btn-lg"
+            {{action "purchase_premium_symbols"}}
+            disabled={{premium_symbols_enabled}}
+          >
+            {{t
+              "Purchase Premium Symbols (US$45)"
+              key="purchase_premium_symbols_with_price"
+            }}
+          </button>
+          <button
+            class="btn btn-default btn-lg"
+            {{action "premium_symbols" false}}
+          >{{t "Cancel" key="cancel"}}</button>
           {{#if extras_status.error}}
             {{#if extras_status.declined}}
-              <p>{{t "There was a problem with the purchase, your card was declined" key='card_declined_error'}}</p>
+              <p>{{t
+                  "There was a problem with the purchase, your card was declined"
+                  key="card_declined_error"
+                }}</p>
             {{else}}
-              <p>{{t "Error Confirming Purchase" key='error_with_purchase'}}</p>
+              <p>{{t "Error Confirming Purchase" key="error_with_purchase"}}</p>
             {{/if}}
           {{/if}}
         {{/if}}
@@ -152,97 +351,179 @@
       {{#unless subscription.show_options}}
         {{#unless subscription.user.is_sponsored}}
           <div style="margin-top: 20px;">
-            {{# if app_state.domain_settings.full_domain}}
-              <a class='btn btn-default' href="#" {{action 'show_options'}}>
+            {{#if app_state.domain_settings.full_domain}}
+              <a class="btn btn-default" href="#" {{action "show_options"}}>
                 {{#if subscription.app_pricing_override}}
-                  {{t "Add Premium Features" key='add_premium_features'}}
+                  {{t "Add Premium Features" key="add_premium_features"}}
                 {{else}}
-                  {{t "Update my Billing Settings" key='change_my_subscription'}}
+                  {{t
+                    "Update my Billing Settings"
+                    key="change_my_subscription"
+                  }}
                 {{/if}}
               </a>
               {{#unless subscription.user.subscription.extras_enabled}}
                 {{#unless subscription.app_pricing_override}}
-                  <a class='btn btn-default' href="#" {{action 'premium_symbols' true}}>{{t "Purchase Premium Symbols" key='purchase_premium_symbols'}}</a>
+                  <a
+                    class="btn btn-default"
+                    href="#"
+                    {{action "premium_symbols" true}}
+                  >{{t
+                      "Purchase Premium Symbols"
+                      key="purchase_premium_symbols"
+                    }}</a>
                 {{/unless}}
               {{/unless}}
               {{#if subscription.app_pricing_override}}
                 {{#if subscription.has_app_subscription}}
-                  <a class='btn btn-default' href="#" {{action 'manage_subscriptions'}}>{{t "Manage Subscriptions" key='manage_subscriptions'}}</a>
+                  <a
+                    class="btn btn-default"
+                    href="#"
+                    {{action "manage_subscriptions"}}
+                  >{{t "Manage Subscriptions" key="manage_subscriptions"}}</a>
                 {{/if}}
                 {{#if subscription.manual_refresh}}
-                  <a class='btn btn-default' href="#" {{action 'refresh_subscription'}}>{{t "Restore Purchases" key='restore_purchases'}}</a>
+                  <a
+                    class="btn btn-default"
+                    href="#"
+                    {{action "refresh_subscription"}}
+                  >{{t "Restore Purchases" key="restore_purchases"}}</a>
                 {{/if}}
               {{/if}}
               {{#if subscription.user.subscription.started}}
-                <a class='btn btn-default' href="#" {{action 'cancel_subscription'}}>{{t "Cancel my Subscription" key='cancel_my_subscription'}}</a>
-              {{else if subscription.user.subscription.subscribed_as_communicator}}
-                <a class='btn btn-default' href="#" {{action 'cancel_subscription'}}>{{t "Cancel my Subscription" key='cancel_my_subscription'}}</a>
+                <a
+                  class="btn btn-default"
+                  href="#"
+                  {{action "cancel_subscription"}}
+                >{{t "Cancel my Subscription" key="cancel_my_subscription"}}</a>
+              {{else if
+                subscription.user.subscription.subscribed_as_communicator
+              }}
+                <a
+                  class="btn btn-default"
+                  href="#"
+                  {{action "cancel_subscription"}}
+                >{{t "Cancel my Subscription" key="cancel_my_subscription"}}</a>
               {{/if}}
               {{#if app_state.domain_settings.full_domain}}
                 {{#unless confirmation}}
                   {{#unless subscription.app_pricing_override}}
-                    {{#link-to 'gift_purchase' class='btn btn-default'}}{{t "Purchase as a Gift" key='purchase_as_a_gift'}}{{/link-to}}
+                    {{#link-to "gift_purchase" class="btn btn-default"}}{{t
+                        "Purchase as a Gift"
+                        key="purchase_as_a_gift"
+                      }}{{/link-to}}
                   {{/unless}}
                 {{/unless}}
               {{/if}}
             {{/if}}
           </div>
         {{/unless}}
-      {{else if subscription.finalizing_purchase}}
-        <h4>{{t "Confirming account update..." key='finalizing_subscription_update'}}</h4>
-      {{else}}
-        {{#if subscription.show_cancel}}
-          {{#if session.isAuthenticated}}
-            <div style="margin-top: 20px;">
-              <h3>{{t "Cancel Subscription" key='cancel_subscription'}}</h3>
-              {{#if subscription.canceling}}
-                <p>{{t "Canceling subscription..." key='canceling'}}</p>
-              {{else}}
-                <p>{{t "We are sorry to see you go! Are you sure you want to cancel your subscription? This will remove your access to premium features in %app_name% like reports and logging." key='confirm_cancel_subscription'}}</p>
-                <p style='display: block; max-width: 500px;'>{{input type='text' value=cancel_reason class='form-control' placeholder='Can you share your reason for canceling?'}}</p>
-                <button type="button" class="btn btn-primary" {{action 'cancel_subscription' true}}>{{t "Cancel Subscription" key='cancel_subscription'}}</button>
-                <button type="button" class="btn btn-default" {{action "reset"}}>{{t "Never Mind" key='never_mind'}}</button>
-              {{/if}}
-            </div>
-          {{else}}
-            <div style="margin-top: 20px;">
-              <h3>{{t "Cancel Subscription" key='cancel_subscription'}}</h3>
-              <p>{{t "You'll need to log in before you can cancel your subscription" key='login_before_canceling'}}</p>
-              <div style="margin-left: 15px;">
-                {{login-form left=true return=true}}
-              </div>
-            </div>
-          {{/if}}
+      {{else}}{{#if subscription.finalizing_purchase}}
+          <h4>{{t
+              "Confirming account update..."
+              key="finalizing_subscription_update"
+            }}</h4>
         {{else}}
-          {{#if subscription.discount_period}}
-            <div class="row">
-              <div class="col-sm-9">
-                <strong>{{t "Discount available!" key='temporary_discount'}}</strong>
-                {{t "When you purchase a %app_name% communicator account within 24 hours after signing up, you'll receive a 25% discount. If you sign up for a monthly account we won't start charging for 2 months, and a long-term purchase will still get your 2 free months as well, so feel free to sign up now!" key='temporary_discount_explanation'}}
+          {{#if subscription.show_cancel}}
+            {{#if session.isAuthenticated}}
+              <div style="margin-top: 20px;">
+                <h3>{{t "Cancel Subscription" key="cancel_subscription"}}</h3>
+                {{#if subscription.canceling}}
+                  <p>{{t "Canceling subscription..." key="canceling"}}</p>
+                {{else}}
+                  <p>{{t
+                      "We are sorry to see you go! Are you sure you want to cancel your subscription? This will remove your access to premium features in %app_name% like reports and logging."
+                      key="confirm_cancel_subscription"
+                    }}</p>
+                  <p style="display: block; max-width: 500px;">{{input
+                      type="text"
+                      value=cancel_reason
+                      class="form-control"
+                      placeholder="Can you share your reason for canceling?"
+                    }}</p>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    {{action "cancel_subscription" true}}
+                  >{{t
+                      "Cancel Subscription"
+                      key="cancel_subscription"
+                    }}</button>
+                  <button
+                    type="button"
+                    class="btn btn-default"
+                    {{action "reset"}}
+                  >{{t "Never Mind" key="never_mind"}}</button>
+                {{/if}}
               </div>
-            </div>
-          {{else if subscription.sale}}
-            <div class="row">
-              <div class="col-sm-7" style='margin: 20px 0 10px;'>
-                <strong>{{t "%app_name% is currently on sale!" key='on_sale'}}</strong>
-                {{t "You can purchase a communicator account right now at a discount! This sale ends" key='on_sale_explanation'}}
-                {{date subscription.sale_ends 'day'}}
-                {{t "so sign up now or help spread the word!" key='on_sale_explanation2'}}
+            {{else}}
+              <div style="margin-top: 20px;">
+                <h3>{{t "Cancel Subscription" key="cancel_subscription"}}</h3>
+                <p>{{t
+                    "You'll need to log in before you can cancel your subscription"
+                    key="login_before_canceling"
+                  }}</p>
+                <div style="margin-left: 15px;">
+                  {{login-form left=true return=true}}
+                </div>
               </div>
-            </div>
+            {{/if}}
+          {{else}}
+            {{#if subscription.discount_period}}
+              <div class="row">
+                <div class="col-sm-9">
+                  <strong>{{t
+                      "Discount available!"
+                      key="temporary_discount"
+                    }}</strong>
+                  {{t
+                    "When you purchase a %app_name% communicator account within 24 hours after signing up, you'll receive a 25% discount. If you sign up for a monthly account we won't start charging for 2 months, and a long-term purchase will still get your 2 free months as well, so feel free to sign up now!"
+                    key="temporary_discount_explanation"
+                  }}
+                </div>
+              </div>
+            {{else if subscription.sale}}
+              <div class="row">
+                <div class="col-sm-7" style="margin: 20px 0 10px;">
+                  <strong>{{t
+                      "%app_name% is currently on sale!"
+                      key="on_sale"
+                    }}</strong>
+                  {{t
+                    "You can purchase a communicator account right now at a discount! This sale ends"
+                    key="on_sale_explanation"
+                  }}
+                  {{date subscription.sale_ends "day"}}
+                  {{t
+                    "so sign up now or help spread the word!"
+                    key="on_sale_explanation2"
+                  }}
+                </div>
+              </div>
+            {{/if}}
+            {{subscription-form
+              user=model
+              subscription=subscription
+              subscription_error="subscription_error"
+              subscription_success="subscription_success"
+            }}
           {{/if}}
-          {{subscription-form user=model subscription=subscription subscription_error='subscription_error' subscription_success='subscription_success'}}
-        {{/if}}
-      {{/unless}}
+        {{/if}}{{/unless}}
     {{/if}}
   {{/if}}
 {{else if subscription.loading}}
-  <p>{{t "Loading billing details..." key='loading_subscription_details'}}</p>
+  <p>{{t "Loading billing details..." key="loading_subscription_details"}}</p>
 {{else if session.isAuthenticated}}
-  <p>{{t "It looks like you don't have permission to access this information" key='not_authorized_for_access'}}</p>
+  <p>{{t
+      "It looks like you don't have permission to access this information"
+      key="not_authorized_for_access"
+    }}</p>
 {{else}}
   {{#if subscription.error}}
-    <p>{{t "There was an error loading billing details" key='error_loading_subscription_details'}}</p>
+    <p>{{t
+        "There was an error loading billing details"
+        key="error_loading_subscription_details"
+      }}</p>
   {{/if}}
   {{login-form left=true prompt=true return=true}}
 {{/if}}
