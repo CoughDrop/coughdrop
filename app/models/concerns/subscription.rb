@@ -1164,8 +1164,6 @@ module Subscription
         last_reminded = Time.parse(user.settings['subscription']['last_logging_reminder_notification']) rescue Time.at(0)
         if last_reminded < 7.days.ago
           UserMailer.deliver_message(:usage_reminder, user.global_id)
-          UserMailer.schedule_later_delivery(:welcome_confirm_registration, user.global_id)
-          UserMailer.deliver_message(:welcome_confirm_registration, user.global_id)
 
           user.update_setting({
             'subscription' => {'last_logging_reminder_notification' => Time.now.iso8601}
