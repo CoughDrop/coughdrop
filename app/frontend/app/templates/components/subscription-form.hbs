@@ -950,7 +950,12 @@
                 }}</p>
             {{/unless}}
           {{/if}}
-          <button type="submit" rel="activate" class="btn btn-lg btn-primary">
+          <button
+            type="submit"
+            rel="activate"
+            class="btn btn-lg btn-primary"
+            disabled={{free_forever}}
+          >
             {{#if subscription.discount_percent}}
               <div style="font-weight: bold;">
                 <span class="glyphicon glyphicon-ok-sign"></span>
