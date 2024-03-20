@@ -1121,6 +1121,16 @@ module Subscription
           alerts[:upcoming_emailed] += 1
         end
       end
+
+      # send out an notification to admin and user after four days on new user sign-up
+      new_users = User.where('created_at >= ? AND created_at <= ?', 4.days.ago.beginning_of_day, 4.days.ago.end_of_day)
+      new_users.each do |user|
+        created_date = user.created_at
+        if created_date.to_date == 4.days.ago.to_date
+          UserMailer.deliver_message(:welcome_confirm_registration, user.global_id)
+        end
+      end
+
       
       now_expired = User.where(['expires_at > ? AND expires_at < ?', 3.days.ago, Time.now])
       # send out an expiration notification to all the ones that haven't been notified yet
