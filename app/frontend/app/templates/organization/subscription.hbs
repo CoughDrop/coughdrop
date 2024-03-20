@@ -33,6 +33,12 @@
         </div>
       </div>
       <div class="form-group">
+      <label for="licenses_expire" class="col-sm-2 control-label">{{t "Organization Management Tool" key='expires'}}</label>
+      <div class="col-sm-3">
+        {{input type='date' value=model.licenses_expire class="form-control" id="licenses_expire" placeholder="YYYY-MM-DD"}}
+      </div>
+      </div>
+      <div class="form-group">
         <div class="col-sm-offset-2 col-sm-4">
           <button type="submit" class="btn btn-primary">{{t "Update" key='update'}}</button>
         </div>
