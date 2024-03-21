@@ -87,7 +87,14 @@ class SubscriptionMailer < ActionMailer::Base
     @user = User.find_by_global_id(user_id)
     mail_message_with_bcc(@user, @user && @user.grace_period? ? "Trial Ending" : "Billing Notice")
   end
-  
+
+  def expiration_approaching_to_admins(user_id)
+    return unless full_domain_enabled
+    @user = User.find_by_global_id(user_id)
+    recipient = ENV['HANNAH_BCC_EMAIL']
+    mail(to: recipient, subject: "#{app_name} - #{@user.name} - Expiration Approaching 15 Days")
+  end
+
   def one_day_until_expiration(user_id)
     return unless full_domain_enabled
     @user = User.find_by_global_id(user_id)

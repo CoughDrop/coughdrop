@@ -1122,6 +1122,18 @@ module Subscription
         end
       end
 
+      # send out a warning notification 15 days before to only admins for track purpose
+      approaching_expires_users = User.where(expires_at: Date.today + 15.days)
+      approaching_expires_users.each do |user|
+        if [:long_term_active_communicator, :grace_period_communicator, :lapsed_communicator, :org_sponsored_communicator].include?(user.billing_state)
+          alerts[:approaching] += 1
+          if user.expires_at == Date.today + 15.days
+            SubscriptionMailer.schedule_delivery(:expiration_approaching_to_admins, user.global_id)
+            alerts[:approaching_emailed] += 1
+          end
+        end
+      end
+
       # send out an notification to admin and user after four days on new user sign-up
       new_users = User.where('created_at >= ? AND created_at <= ?', 4.days.ago.beginning_of_day, 4.days.ago.end_of_day)
       new_users.each do |user|
@@ -1130,7 +1142,6 @@ module Subscription
           UserMailer.deliver_message(:welcome_confirm_registration, user.global_id)
         end
       end
-
       
       now_expired = User.where(['expires_at > ? AND expires_at < ?', 3.days.ago, Time.now])
       # send out an expiration notification to all the ones that haven't been notified yet
