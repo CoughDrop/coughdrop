@@ -1,0 +1,28 @@
+Hello! We wanted to reach out and make sure you know that your 
+<%= @user.grace_period? ? "free trial" : "organization management access" %>
+for
+the <%= app_name %> user account <b><%= @user.user_name %></b> will conclude soon. 
+Hopefully <%= app_name %> has been a useful tool and you're excited to 
+keep using it. We're constantly working with experts to make <%= app_name %> easier
+and more informative, and it'd be great to have you along for the ride.<br/><br/> 
+
+Remember, your purchase doesn't just help you or the communicators you work with, 
+it also goes to help fund communicators in need, and to help push technology 
+forward for the thousands of communicators in need around the world!
+If you don't need <%= app_name %> right now, don't worry, you won't
+be automatically billed or anything, and your account will stay here waiting for you
+in case you decide to pick it up again later  (you won't receive regular emails from us).<br/><br/>
+
+Your organization management access is set to expire <b><%= @user.expires_at.to_s(:long_ordinal) %></b>. 
+Please 
+<a href="<%= JsonApi::Json.current_host %>/<%= @user.user_name %>/subscription?confirmation=<%= @user.registration_code %>">update your billing settings</a> 
+so that you don't miss out on the great resource <%= app_name %> can be to help
+struggling communicators.<br/><br/>
+
+If you need help finding a funding solution, please don't be afraid to reach out to us, 
+we're willing to work with individuals to find a good solution. Just 
+<a href="<%= JsonApi::Json.current_host %>/contact">contact us</a>
+and we'll be happy to work with you.<br/><br/>
+
+Thanks!<br/>
+<%= email_signature %>

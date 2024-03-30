@@ -1122,6 +1122,32 @@ module Subscription
         end
       end
 
+      # organization tool expiration mailer
+      upcoming_org_expires = User.where(['organization_expires_at > ? AND organization_expires_at < ?', 6.hours.from_now, 1.week.from_now])
+      # send out a warning notification 1 week before, and another one the day before,
+      # to all the ones that haven't been warned yet for this cycle
+      upcoming_org_expires.each do |user|
+        # only notify expired communicators
+        next if !user.communicator_role? || user.eval_account? || [:never_expires_communicator, :subscribed_communicator, :long_term_active_communicator, :org_sponsored_communicator].include?(user.billing_state)
+        alerts[:upcoming] += 1
+        user.settings['subscription'] ||= {}
+        last_day = Time.parse(user.settings['subscription']['last_org_expiring_day_notification']) rescue Time.at(0)
+        last_week = Time.parse(user.settings['subscription']['last_org_expiring_week_notification']) rescue Time.at(0)
+        if user.organization_expires_at <= 36.hours.from_now && last_day < 1.week.ago
+          SubscriptionMailer.deliver_message(:one_week_until_org_expiration, user.global_id)
+          user.update_setting({
+            'subscription' => {'last_org_expiring_day_notification' => Time.now.iso8601}
+          })
+          alerts[:upcoming_emailed] += 1
+        elsif user.organization_expires_at > 4.days.from_now && last_week < 1.week.ago
+          SubscriptionMailer.deliver_message(:one_week_until_org_expiration, user.global_id)
+          user.update_setting({
+            'subscription' => {'last_org_expiring_week_notification' => Time.now.iso8601}
+          })
+          alerts[:upcoming_emailed] += 1
+        end
+      end
+
       # send out a warning notification 15 days before to only admins for track purpose
       approaching_expires_users = User.where(expires_at: Date.today + 15.days)
       approaching_expires_users.each do |user|
