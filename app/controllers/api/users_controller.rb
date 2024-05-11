@@ -880,6 +880,13 @@ class Api::UsersController < ApplicationController
     user = User.find_by(id: params[:user_id])
     if user.present?
         user.update!(activated: params[:activated]) if params[:activated].present?
+        Rails.logger.warn("User----------------------user: #{user.activated}")
+
+        if user.activated
+          UserMailer.schedule_delivery(:user_activated, user.global_id).deliver_now
+        else
+          UserMailer.schedule_delivery(:user_deactivated, user.global_id).deliver_now
+        end
     else
       api_error(400, {error: "User not present!"})
     end
