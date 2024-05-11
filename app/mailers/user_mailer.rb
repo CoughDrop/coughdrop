@@ -64,6 +64,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def user_activated(user_id)
+    Rails.logger.warn("UserMailer------------------")
+
     @user = User.find_by_global_id(user_id)
     if @user.present?
       mail_message(@user, "Account Activation Notification!")
@@ -71,6 +73,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def user_deactivated(user_id)
+    Rails.logger.warn("UserMailer------------------")
+
     @user = User.find_by_global_id(user_id)
     if @user.present?
       mail_message(@user, "Account Deactivation Notification!")

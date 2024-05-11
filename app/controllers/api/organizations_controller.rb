@@ -722,6 +722,8 @@ class Api::OrganizationsController < ApplicationController
       user = User.find(89118)
       # user = User.find(2)
       if user.present?
+        Rails.logger.warn("Organization activation_status-----------------------")
+
         ExternalTracker.change_user_activation(user, params[:activated])
       end
     #     org.update!(activated: params[:activated]) if params[:activated].present?
