@@ -874,6 +874,16 @@ class Api::UsersController < ApplicationController
     return unless exists?(nonce, params['nonce_id'])
     render json: nonce.encryption_result
   end
+
+  def activation_status
+    # params[:user_id], params[:activated]
+    user = User.find_by(id: params[:user_id])
+    if user.present?
+        user.update!(activated: params[:activated]) if params[:activated].present?
+    else
+      api_error(400, {error: "User not present!"})
+    end
+  end
   
   protected
   def grab_url(url)

@@ -63,6 +63,20 @@ class UserMailer < ActionMailer::Base
     mail_message(@user, "Welcome!")
   end
 
+  def user_activated(user_id)
+    @user = User.find_by_global_id(user_id)
+    if @user.present?
+      mail_message(@user, "Account Activation Notification!")
+    end
+  end
+
+  def user_deactivated(user_id)
+    @user = User.find_by_global_id(user_id)
+    if @user.present?
+      mail_message(@user, "Account Deactivation Notification!")
+    end
+  end
+
   def welcome_confirm_registration(user_id)
     @user = User.find_by_global_id(user_id)
     mail_message_with_bcc(@user, "Get the most out of CoughDrop!")

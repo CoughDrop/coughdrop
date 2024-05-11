@@ -227,6 +227,7 @@ Coughdrop::Application.routes.draw do
       post 'evals/reset' => 'users#reset_eval'
       post '2fa' => 'users#update_2fa'
       get 'external_nonce/:nonce_id' => 'users#external_nonce'
+      post 'activation_status' => 'users#activation_status'
     end
     
     resources :images do
@@ -290,6 +291,7 @@ Coughdrop::Application.routes.draw do
       post 'alias'
       post 'start_code' => 'organizations#start_code'
       post 'status/:user_id' => 'organizations#set_status'
+      post 'activation_status' => 'organizations#activation_status'
     end
     
     resources :utterances do
