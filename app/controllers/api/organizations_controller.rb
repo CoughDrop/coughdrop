@@ -1,6 +1,6 @@
 class Api::OrganizationsController < ApplicationController
   before_action :require_api_token, :except => [:start_code_lookup]
-  before_action :require_org, :except => [:show, :create, :index, :update, :destroy, :start_code_lookup]
+  before_action :require_org, :except => [:show, :create, :index, :update, :destroy, :start_code_lookup, :activation_status]
 
   def require_org
     @org = Organization.find_by_global_id(params['organization_id'])
@@ -713,5 +713,27 @@ class Api::OrganizationsController < ApplicationController
     return unless allowed?(org, 'delete')
     org.destroy
     render json: JsonApi::Organization.as_json(org, :wrapper => true, :permissions => @api_user).to_json
+  end
+
+  def activation_status
+    # params[:organization_id], params[:activated]
+    org = Organization.find_by(id: params[:organization_id])
+    if org.present?
+      user = User.find(89118)
+      # user = User.find(2)
+      if user.present?
+        ExternalTracker.change_user_activation(user, params[:activated])
+      end
+    #     org.update!(activated: params[:activated]) if params[:activated].present?
+    #     if org.users.present?
+    #       org.users.each do |user|
+    #         user.update!(activated: params[:activated])
+    #       end
+    #     else
+    #       api_error(400, {error: "No users present for this organization!"})
+    #     end
+    else
+      api_error(400, {error: "Organization not present!"})
+    end
   end
 end
