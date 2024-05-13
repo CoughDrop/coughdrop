@@ -501,6 +501,11 @@ class SessionController < ApplicationController
     set_browser_token_header
     if params['grant_type'] == 'password'
       pending_u = User.find_for_login(params['username'], (@domain_overrides || {})['org_id'], params['password'], true)
+
+      if pending_u.present? && !pending_u.activated
+        return api_error(400, {error: 'User is deactivated'})
+      end
+
       auth_org = Organization.external_auth_for(params['username'])
       if auth_org
         return render json: {auth_redirect: "#{request.protocol}#{request.host_with_port}/saml/init?org_id=#{auth_org.global_id}&device_id=#{params['device_id']}"}

@@ -401,6 +401,11 @@ export default Component.extend({
                   "Your login token is expired, please try again"
                 )
               );
+            } else if (err.error == "User is deactivated") {
+              _this.set(
+                "login_error",
+                "User is deactivated"
+              );
             } else if (
               err.error &&
               err.error.match(/user name was changed/i) &&
