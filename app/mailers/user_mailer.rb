@@ -63,7 +63,7 @@ class UserMailer < ActionMailer::Base
     mail_message(@user, "Welcome!")
   end
 
-  def user_activated(user_id)
+  def activated_user(user_id)
     Rails.logger.warn("UserMailer------------------")
 
     @user = User.find_by_global_id(user_id)

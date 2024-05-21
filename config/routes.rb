@@ -291,7 +291,6 @@ Coughdrop::Application.routes.draw do
       post 'alias'
       post 'start_code' => 'organizations#start_code'
       post 'status/:user_id' => 'organizations#set_status'
-      post 'activation_status' => 'organizations#activation_status'
     end
     
     resources :utterances do
