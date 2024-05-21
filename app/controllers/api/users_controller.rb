@@ -883,7 +883,7 @@ class Api::UsersController < ApplicationController
         Rails.logger.warn("User----------------------user: #{user.activated}")
 
         if user.activated
-          UserMailer.schedule_delivery(:user_activated, user.global_id)
+          UserMailer.schedule_delivery(:activated_user, user.global_id)
         else
           UserMailer.schedule_delivery(:user_deactivated, user.global_id)
         end

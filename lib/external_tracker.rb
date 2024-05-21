@@ -5,28 +5,6 @@ module ExternalTracker
     end
   end
 
-  def self.change_user_activation(user, activation_state)
-    Rails.logger.warn("ExternalTracker change_user_activation------------------------activation_state: #{activation_state}")
-
-    Worker.schedule(ExternalTracker, :user_activation, user, activation_state)
-  end
-
-  def self.user_activation(user, activation_state)
-    begin
-      Rails.logger.warn("ExternalTracker user_activation------------------------user.activated: #{user.activated}")
-
-      user.update!(activated: activation_state)
-      Rails.logger.warn("ExternalTracker user_activation------------------------user.activated: #{user.activated}")
-
-      if user.activated
-        UserMailer.schedule_delivery(:user_activated, user.global_id).deliver_now
-      else
-        UserMailer.schedule_delivery(:user_deactivated, user.global_id).deliver_now
-      end
-    rescue ActiveRecord::RecordInvalid => e
-      puts "Error: #{e.message}"
-    end
-  end
 
   def self.persist_new_user(user_id)
     user = User.find_by_path(user_id)
